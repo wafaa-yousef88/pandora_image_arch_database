@@ -1,0 +1,7166 @@
+--
+-- PostgreSQL database dump
+--
+
+SET statement_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+
+--
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+--
+-- Name: pg_trgm; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION pg_trgm; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION pg_trgm IS 'text similarity measurement and index searching based on trigrams';
+
+
+SET search_path = public, pg_catalog;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- Name: annotation_annotation; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE annotation_annotation (
+    id integer NOT NULL,
+    created timestamp with time zone NOT NULL,
+    modified timestamp with time zone NOT NULL,
+    user_id integer NOT NULL,
+    item_id integer NOT NULL,
+    clip_id integer,
+    public_id character varying(128),
+    start double precision NOT NULL,
+    "end" double precision NOT NULL,
+    layer character varying(255) NOT NULL,
+    value text NOT NULL,
+    findvalue text,
+    sortvalue character varying(1000)
+);
+
+
+ALTER TABLE public.annotation_annotation OWNER TO pandora;
+
+--
+-- Name: annotation_annotation_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE annotation_annotation_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.annotation_annotation_id_seq OWNER TO pandora;
+
+--
+-- Name: annotation_annotation_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE annotation_annotation_id_seq OWNED BY annotation_annotation.id;
+
+
+--
+-- Name: app_page; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE app_page (
+    id integer NOT NULL,
+    created timestamp with time zone NOT NULL,
+    modified timestamp with time zone NOT NULL,
+    name character varying(1024) NOT NULL,
+    text text NOT NULL
+);
+
+
+ALTER TABLE public.app_page OWNER TO pandora;
+
+--
+-- Name: app_page_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE app_page_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.app_page_id_seq OWNER TO pandora;
+
+--
+-- Name: app_page_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE app_page_id_seq OWNED BY app_page.id;
+
+
+--
+-- Name: app_settings; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE app_settings (
+    id integer NOT NULL,
+    created timestamp with time zone NOT NULL,
+    modified timestamp with time zone NOT NULL,
+    key character varying(1024) NOT NULL,
+    value text NOT NULL
+);
+
+
+ALTER TABLE public.app_settings OWNER TO pandora;
+
+--
+-- Name: app_settings_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE app_settings_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.app_settings_id_seq OWNER TO pandora;
+
+--
+-- Name: app_settings_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE app_settings_id_seq OWNED BY app_settings.id;
+
+
+--
+-- Name: archive_file; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE archive_file (
+    id integer NOT NULL,
+    created timestamp with time zone NOT NULL,
+    modified timestamp with time zone NOT NULL,
+    oshash character varying(16) NOT NULL,
+    item_id integer,
+    path character varying(2048) NOT NULL,
+    sort_path character varying(2048) NOT NULL,
+    type character varying(255) NOT NULL,
+    extension character varying(255),
+    language character varying(8),
+    part character varying(255),
+    part_title character varying(255),
+    version character varying(255),
+    size bigint NOT NULL,
+    duration double precision,
+    info text NOT NULL,
+    video_codec character varying(255) NOT NULL,
+    pixel_format character varying(255) NOT NULL,
+    display_aspect_ratio character varying(255) NOT NULL,
+    width integer NOT NULL,
+    height integer NOT NULL,
+    framerate character varying(255) NOT NULL,
+    audio_codec character varying(255) NOT NULL,
+    channels integer NOT NULL,
+    samplerate integer NOT NULL,
+    bits_per_pixel double precision NOT NULL,
+    pixels bigint NOT NULL,
+    available boolean NOT NULL,
+    selected boolean NOT NULL,
+    uploading boolean NOT NULL,
+    wanted boolean NOT NULL,
+    is_audio boolean NOT NULL,
+    is_video boolean NOT NULL,
+    is_subtitle boolean NOT NULL,
+    data character varying(100),
+    encoding boolean NOT NULL,
+    queued boolean NOT NULL,
+    failed boolean NOT NULL,
+    is_image boolean NOT NULL
+);
+
+
+ALTER TABLE public.archive_file OWNER TO pandora;
+
+--
+-- Name: archive_file_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE archive_file_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.archive_file_id_seq OWNER TO pandora;
+
+--
+-- Name: archive_file_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE archive_file_id_seq OWNED BY archive_file.id;
+
+
+--
+-- Name: archive_frame; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE archive_frame (
+    id integer NOT NULL,
+    created timestamp with time zone NOT NULL,
+    modified timestamp with time zone NOT NULL,
+    file_id integer NOT NULL,
+    "position" double precision NOT NULL,
+    frame character varying(100)
+);
+
+
+ALTER TABLE public.archive_frame OWNER TO pandora;
+
+--
+-- Name: archive_frame_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE archive_frame_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.archive_frame_id_seq OWNER TO pandora;
+
+--
+-- Name: archive_frame_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE archive_frame_id_seq OWNED BY archive_frame.id;
+
+
+--
+-- Name: archive_instance; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE archive_instance (
+    id integer NOT NULL,
+    created timestamp with time zone NOT NULL,
+    modified timestamp with time zone NOT NULL,
+    atime integer NOT NULL,
+    ctime integer NOT NULL,
+    mtime integer NOT NULL,
+    path character varying(2048) NOT NULL,
+    ignore boolean NOT NULL,
+    file_id integer NOT NULL,
+    volume_id integer NOT NULL
+);
+
+
+ALTER TABLE public.archive_instance OWNER TO pandora;
+
+--
+-- Name: archive_instance_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE archive_instance_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.archive_instance_id_seq OWNER TO pandora;
+
+--
+-- Name: archive_instance_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE archive_instance_id_seq OWNED BY archive_instance.id;
+
+
+--
+-- Name: archive_stream; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE archive_stream (
+    id integer NOT NULL,
+    file_id integer NOT NULL,
+    resolution integer NOT NULL,
+    format character varying(255) NOT NULL,
+    media character varying(100) NOT NULL,
+    source_id integer,
+    available boolean NOT NULL,
+    oshash character varying(16),
+    info text NOT NULL,
+    duration double precision NOT NULL,
+    aspect_ratio double precision NOT NULL,
+    cuts text NOT NULL,
+    color text NOT NULL,
+    volume double precision NOT NULL,
+    error text NOT NULL
+);
+
+
+ALTER TABLE public.archive_stream OWNER TO pandora;
+
+--
+-- Name: archive_stream_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE archive_stream_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.archive_stream_id_seq OWNER TO pandora;
+
+--
+-- Name: archive_stream_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE archive_stream_id_seq OWNED BY archive_stream.id;
+
+
+--
+-- Name: archive_volume; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE archive_volume (
+    id integer NOT NULL,
+    created timestamp with time zone NOT NULL,
+    modified timestamp with time zone NOT NULL,
+    user_id integer NOT NULL,
+    name character varying(1024) NOT NULL
+);
+
+
+ALTER TABLE public.archive_volume OWNER TO pandora;
+
+--
+-- Name: archive_volume_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE archive_volume_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.archive_volume_id_seq OWNER TO pandora;
+
+--
+-- Name: archive_volume_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE archive_volume_id_seq OWNED BY archive_volume.id;
+
+
+--
+-- Name: auth_group; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE auth_group (
+    id integer NOT NULL,
+    name character varying(255) NOT NULL
+);
+
+
+ALTER TABLE public.auth_group OWNER TO pandora;
+
+--
+-- Name: auth_group_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE auth_group_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_group_id_seq OWNER TO pandora;
+
+--
+-- Name: auth_group_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE auth_group_id_seq OWNED BY auth_group.id;
+
+
+--
+-- Name: auth_group_permissions; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE auth_group_permissions (
+    id integer NOT NULL,
+    group_id integer NOT NULL,
+    permission_id integer NOT NULL
+);
+
+
+ALTER TABLE public.auth_group_permissions OWNER TO pandora;
+
+--
+-- Name: auth_group_permissions_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE auth_group_permissions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_group_permissions_id_seq OWNER TO pandora;
+
+--
+-- Name: auth_group_permissions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE auth_group_permissions_id_seq OWNED BY auth_group_permissions.id;
+
+
+--
+-- Name: auth_permission; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE auth_permission (
+    id integer NOT NULL,
+    name character varying(50) NOT NULL,
+    content_type_id integer NOT NULL,
+    codename character varying(100) NOT NULL
+);
+
+
+ALTER TABLE public.auth_permission OWNER TO pandora;
+
+--
+-- Name: auth_permission_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE auth_permission_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_permission_id_seq OWNER TO pandora;
+
+--
+-- Name: auth_permission_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE auth_permission_id_seq OWNED BY auth_permission.id;
+
+
+--
+-- Name: auth_user; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE auth_user (
+    id integer NOT NULL,
+    username character varying(255) NOT NULL,
+    first_name character varying(30) NOT NULL,
+    last_name character varying(30) NOT NULL,
+    email character varying(255) NOT NULL,
+    password character varying(255) NOT NULL,
+    is_staff boolean NOT NULL,
+    is_active boolean NOT NULL,
+    is_superuser boolean NOT NULL,
+    last_login timestamp with time zone NOT NULL,
+    date_joined timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE public.auth_user OWNER TO pandora;
+
+--
+-- Name: auth_user_groups; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE auth_user_groups (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    group_id integer NOT NULL
+);
+
+
+ALTER TABLE public.auth_user_groups OWNER TO pandora;
+
+--
+-- Name: auth_user_groups_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE auth_user_groups_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_user_groups_id_seq OWNER TO pandora;
+
+--
+-- Name: auth_user_groups_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE auth_user_groups_id_seq OWNED BY auth_user_groups.id;
+
+
+--
+-- Name: auth_user_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE auth_user_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_user_id_seq OWNER TO pandora;
+
+--
+-- Name: auth_user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE auth_user_id_seq OWNED BY auth_user.id;
+
+
+--
+-- Name: auth_user_user_permissions; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE auth_user_user_permissions (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    permission_id integer NOT NULL
+);
+
+
+ALTER TABLE public.auth_user_user_permissions OWNER TO pandora;
+
+--
+-- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE auth_user_user_permissions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_user_user_permissions_id_seq OWNER TO pandora;
+
+--
+-- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE auth_user_user_permissions_id_seq OWNED BY auth_user_user_permissions.id;
+
+
+--
+-- Name: celery_taskmeta; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE celery_taskmeta (
+    id integer NOT NULL,
+    task_id character varying(255) NOT NULL,
+    status character varying(50) NOT NULL,
+    result text,
+    date_done timestamp with time zone NOT NULL,
+    traceback text,
+    hidden boolean NOT NULL,
+    meta text
+);
+
+
+ALTER TABLE public.celery_taskmeta OWNER TO pandora;
+
+--
+-- Name: celery_taskmeta_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE celery_taskmeta_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.celery_taskmeta_id_seq OWNER TO pandora;
+
+--
+-- Name: celery_taskmeta_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE celery_taskmeta_id_seq OWNED BY celery_taskmeta.id;
+
+
+--
+-- Name: celery_tasksetmeta; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE celery_tasksetmeta (
+    id integer NOT NULL,
+    taskset_id character varying(255) NOT NULL,
+    result text NOT NULL,
+    date_done timestamp with time zone NOT NULL,
+    hidden boolean NOT NULL
+);
+
+
+ALTER TABLE public.celery_tasksetmeta OWNER TO pandora;
+
+--
+-- Name: celery_tasksetmeta_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE celery_tasksetmeta_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.celery_tasksetmeta_id_seq OWNER TO pandora;
+
+--
+-- Name: celery_tasksetmeta_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE celery_tasksetmeta_id_seq OWNED BY celery_tasksetmeta.id;
+
+
+--
+-- Name: changelog_changelog; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE changelog_changelog (
+    id integer NOT NULL,
+    created timestamp with time zone NOT NULL,
+    type character varying(255) NOT NULL,
+    value text NOT NULL
+);
+
+
+ALTER TABLE public.changelog_changelog OWNER TO pandora;
+
+--
+-- Name: changelog_changelog_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE changelog_changelog_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.changelog_changelog_id_seq OWNER TO pandora;
+
+--
+-- Name: changelog_changelog_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE changelog_changelog_id_seq OWNED BY changelog_changelog.id;
+
+
+--
+-- Name: clip_clip; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE clip_clip (
+    id integer NOT NULL,
+    created timestamp with time zone NOT NULL,
+    modified timestamp with time zone NOT NULL,
+    aspect_ratio double precision NOT NULL,
+    item_id integer NOT NULL,
+    sort_id integer NOT NULL,
+    "user" integer,
+    start double precision NOT NULL,
+    "end" double precision NOT NULL,
+    duration double precision NOT NULL,
+    hue double precision NOT NULL,
+    saturation double precision NOT NULL,
+    lightness double precision NOT NULL,
+    volume double precision,
+    sortvalue character varying(1000),
+    findvalue text,
+    subtitles boolean NOT NULL,
+    publicnotes boolean NOT NULL,
+    keywords boolean NOT NULL
+);
+
+
+ALTER TABLE public.clip_clip OWNER TO pandora;
+
+--
+-- Name: clip_clip_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE clip_clip_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.clip_clip_id_seq OWNER TO pandora;
+
+--
+-- Name: clip_clip_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE clip_clip_id_seq OWNED BY clip_clip.id;
+
+
+--
+-- Name: clip_random; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE clip_random (
+    clip_id integer NOT NULL,
+    random bigint
+);
+
+
+ALTER TABLE public.clip_random OWNER TO pandora;
+
+--
+-- Name: django_admin_log; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE django_admin_log (
+    id integer NOT NULL,
+    action_time timestamp with time zone NOT NULL,
+    user_id integer NOT NULL,
+    content_type_id integer,
+    object_id text,
+    object_repr character varying(200) NOT NULL,
+    action_flag smallint NOT NULL,
+    change_message text NOT NULL,
+    CONSTRAINT django_admin_log_action_flag_check CHECK ((action_flag >= 0))
+);
+
+
+ALTER TABLE public.django_admin_log OWNER TO pandora;
+
+--
+-- Name: django_admin_log_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE django_admin_log_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.django_admin_log_id_seq OWNER TO pandora;
+
+--
+-- Name: django_admin_log_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE django_admin_log_id_seq OWNED BY django_admin_log.id;
+
+
+--
+-- Name: django_content_type; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE django_content_type (
+    id integer NOT NULL,
+    name character varying(100) NOT NULL,
+    app_label character varying(100) NOT NULL,
+    model character varying(100) NOT NULL
+);
+
+
+ALTER TABLE public.django_content_type OWNER TO pandora;
+
+--
+-- Name: django_content_type_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE django_content_type_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.django_content_type_id_seq OWNER TO pandora;
+
+--
+-- Name: django_content_type_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE django_content_type_id_seq OWNED BY django_content_type.id;
+
+
+--
+-- Name: django_session; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE django_session (
+    session_key character varying(40) NOT NULL,
+    session_data text NOT NULL,
+    expire_date timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE public.django_session OWNER TO pandora;
+
+--
+-- Name: django_site; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE django_site (
+    id integer NOT NULL,
+    domain character varying(100) NOT NULL,
+    name character varying(50) NOT NULL
+);
+
+
+ALTER TABLE public.django_site OWNER TO pandora;
+
+--
+-- Name: django_site_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE django_site_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.django_site_id_seq OWNER TO pandora;
+
+--
+-- Name: django_site_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE django_site_id_seq OWNED BY django_site.id;
+
+
+--
+-- Name: djcelery_crontabschedule; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE djcelery_crontabschedule (
+    id integer NOT NULL,
+    minute character varying(64) NOT NULL,
+    hour character varying(64) NOT NULL,
+    day_of_week character varying(64) NOT NULL,
+    day_of_month character varying(64) NOT NULL,
+    month_of_year character varying(64) NOT NULL
+);
+
+
+ALTER TABLE public.djcelery_crontabschedule OWNER TO pandora;
+
+--
+-- Name: djcelery_crontabschedule_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE djcelery_crontabschedule_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.djcelery_crontabschedule_id_seq OWNER TO pandora;
+
+--
+-- Name: djcelery_crontabschedule_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE djcelery_crontabschedule_id_seq OWNED BY djcelery_crontabschedule.id;
+
+
+--
+-- Name: djcelery_intervalschedule; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE djcelery_intervalschedule (
+    id integer NOT NULL,
+    every integer NOT NULL,
+    period character varying(24) NOT NULL
+);
+
+
+ALTER TABLE public.djcelery_intervalschedule OWNER TO pandora;
+
+--
+-- Name: djcelery_intervalschedule_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE djcelery_intervalschedule_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.djcelery_intervalschedule_id_seq OWNER TO pandora;
+
+--
+-- Name: djcelery_intervalschedule_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE djcelery_intervalschedule_id_seq OWNED BY djcelery_intervalschedule.id;
+
+
+--
+-- Name: djcelery_periodictask; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE djcelery_periodictask (
+    id integer NOT NULL,
+    name character varying(200) NOT NULL,
+    task character varying(200) NOT NULL,
+    interval_id integer,
+    crontab_id integer,
+    args text NOT NULL,
+    kwargs text NOT NULL,
+    queue character varying(200),
+    exchange character varying(200),
+    routing_key character varying(200),
+    expires timestamp with time zone,
+    enabled boolean NOT NULL,
+    last_run_at timestamp with time zone,
+    total_run_count integer NOT NULL,
+    date_changed timestamp with time zone NOT NULL,
+    description text NOT NULL,
+    CONSTRAINT djcelery_periodictask_total_run_count_check CHECK ((total_run_count >= 0))
+);
+
+
+ALTER TABLE public.djcelery_periodictask OWNER TO pandora;
+
+--
+-- Name: djcelery_periodictask_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE djcelery_periodictask_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.djcelery_periodictask_id_seq OWNER TO pandora;
+
+--
+-- Name: djcelery_periodictask_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE djcelery_periodictask_id_seq OWNED BY djcelery_periodictask.id;
+
+
+--
+-- Name: djcelery_periodictasks; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE djcelery_periodictasks (
+    ident smallint NOT NULL,
+    last_update timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE public.djcelery_periodictasks OWNER TO pandora;
+
+--
+-- Name: djcelery_taskstate; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE djcelery_taskstate (
+    id integer NOT NULL,
+    state character varying(64) NOT NULL,
+    task_id character varying(36) NOT NULL,
+    name character varying(200),
+    tstamp timestamp with time zone NOT NULL,
+    args text,
+    kwargs text,
+    eta timestamp with time zone,
+    expires timestamp with time zone,
+    result text,
+    traceback text,
+    runtime double precision,
+    retries integer NOT NULL,
+    worker_id integer,
+    hidden boolean NOT NULL
+);
+
+
+ALTER TABLE public.djcelery_taskstate OWNER TO pandora;
+
+--
+-- Name: djcelery_taskstate_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE djcelery_taskstate_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.djcelery_taskstate_id_seq OWNER TO pandora;
+
+--
+-- Name: djcelery_taskstate_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE djcelery_taskstate_id_seq OWNED BY djcelery_taskstate.id;
+
+
+--
+-- Name: djcelery_workerstate; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE djcelery_workerstate (
+    id integer NOT NULL,
+    hostname character varying(255) NOT NULL,
+    last_heartbeat timestamp with time zone
+);
+
+
+ALTER TABLE public.djcelery_workerstate OWNER TO pandora;
+
+--
+-- Name: djcelery_workerstate_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE djcelery_workerstate_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.djcelery_workerstate_id_seq OWNER TO pandora;
+
+--
+-- Name: djcelery_workerstate_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE djcelery_workerstate_id_seq OWNED BY djcelery_workerstate.id;
+
+
+--
+-- Name: document_document; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE document_document (
+    id integer NOT NULL,
+    created timestamp with time zone NOT NULL,
+    modified timestamp with time zone NOT NULL,
+    user_id integer NOT NULL,
+    name character varying(255) NOT NULL,
+    extension character varying(255) NOT NULL,
+    size integer NOT NULL,
+    matches integer NOT NULL,
+    ratio double precision NOT NULL,
+    description text NOT NULL,
+    oshash character varying(16),
+    file character varying(100),
+    uploading boolean NOT NULL,
+    name_sort character varying(255) NOT NULL,
+    description_sort character varying(512) NOT NULL
+);
+
+
+ALTER TABLE public.document_document OWNER TO pandora;
+
+--
+-- Name: document_document_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE document_document_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.document_document_id_seq OWNER TO pandora;
+
+--
+-- Name: document_document_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE document_document_id_seq OWNED BY document_document.id;
+
+
+--
+-- Name: document_itemproperties; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE document_itemproperties (
+    id integer NOT NULL,
+    created timestamp with time zone NOT NULL,
+    modified timestamp with time zone NOT NULL,
+    item_id integer NOT NULL,
+    document_id integer NOT NULL,
+    description text NOT NULL,
+    index integer NOT NULL
+);
+
+
+ALTER TABLE public.document_itemproperties OWNER TO pandora;
+
+--
+-- Name: document_itemproperties_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE document_itemproperties_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.document_itemproperties_id_seq OWNER TO pandora;
+
+--
+-- Name: document_itemproperties_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE document_itemproperties_id_seq OWNED BY document_itemproperties.id;
+
+
+--
+-- Name: edit_clip; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE edit_clip (
+    id integer NOT NULL,
+    created timestamp with time zone NOT NULL,
+    modified timestamp with time zone NOT NULL,
+    edit_id integer NOT NULL,
+    item_id integer,
+    start double precision NOT NULL,
+    "end" double precision NOT NULL,
+    index integer NOT NULL,
+    annotation_id integer,
+    duration double precision NOT NULL,
+    hue double precision NOT NULL,
+    saturation double precision NOT NULL,
+    lightness double precision NOT NULL,
+    volume double precision NOT NULL
+);
+
+
+ALTER TABLE public.edit_clip OWNER TO pandora;
+
+--
+-- Name: edit_clip_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE edit_clip_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.edit_clip_id_seq OWNER TO pandora;
+
+--
+-- Name: edit_clip_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE edit_clip_id_seq OWNED BY edit_clip.id;
+
+
+--
+-- Name: edit_edit; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE edit_edit (
+    id integer NOT NULL,
+    created timestamp with time zone NOT NULL,
+    modified timestamp with time zone NOT NULL,
+    user_id integer NOT NULL,
+    name character varying(255) NOT NULL,
+    status character varying(20) NOT NULL,
+    description text NOT NULL,
+    rightslevel integer NOT NULL,
+    icon character varying(100),
+    poster_frames text NOT NULL
+);
+
+
+ALTER TABLE public.edit_edit OWNER TO pandora;
+
+--
+-- Name: edit_edit_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE edit_edit_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.edit_edit_id_seq OWNER TO pandora;
+
+--
+-- Name: edit_edit_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE edit_edit_id_seq OWNED BY edit_edit.id;
+
+
+--
+-- Name: edit_edit_subscribed_users; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE edit_edit_subscribed_users (
+    id integer NOT NULL,
+    edit_id integer NOT NULL,
+    user_id integer NOT NULL
+);
+
+
+ALTER TABLE public.edit_edit_subscribed_users OWNER TO pandora;
+
+--
+-- Name: edit_edit_subscribed_users_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE edit_edit_subscribed_users_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.edit_edit_subscribed_users_id_seq OWNER TO pandora;
+
+--
+-- Name: edit_edit_subscribed_users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE edit_edit_subscribed_users_id_seq OWNED BY edit_edit_subscribed_users.id;
+
+
+--
+-- Name: edit_position; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE edit_position (
+    id integer NOT NULL,
+    edit_id integer NOT NULL,
+    user_id integer NOT NULL,
+    section character varying(255) NOT NULL,
+    "position" integer NOT NULL
+);
+
+
+ALTER TABLE public.edit_position OWNER TO pandora;
+
+--
+-- Name: edit_position_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE edit_position_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.edit_position_id_seq OWNER TO pandora;
+
+--
+-- Name: edit_position_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE edit_position_id_seq OWNED BY edit_position.id;
+
+
+--
+-- Name: event_event; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE event_event (
+    id integer NOT NULL,
+    created timestamp with time zone NOT NULL,
+    modified timestamp with time zone NOT NULL,
+    defined boolean NOT NULL,
+    user_id integer,
+    name character varying(255),
+    name_sort character varying(255),
+    name_find text NOT NULL,
+    "wikipediaId" character varying(1000) NOT NULL,
+    "alternativeNames" text NOT NULL,
+    start character varying(255) NOT NULL,
+    "startTime" bigint,
+    "end" character varying(255) NOT NULL,
+    "endTime" bigint,
+    duration character varying(255) NOT NULL,
+    "durationTime" bigint,
+    type character varying(255) NOT NULL,
+    matches integer NOT NULL
+);
+
+
+ALTER TABLE public.event_event OWNER TO pandora;
+
+--
+-- Name: event_event_annotations; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE event_event_annotations (
+    id integer NOT NULL,
+    event_id integer NOT NULL,
+    annotation_id integer NOT NULL
+);
+
+
+ALTER TABLE public.event_event_annotations OWNER TO pandora;
+
+--
+-- Name: event_event_annotations_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE event_event_annotations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.event_event_annotations_id_seq OWNER TO pandora;
+
+--
+-- Name: event_event_annotations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE event_event_annotations_id_seq OWNED BY event_event_annotations.id;
+
+
+--
+-- Name: event_event_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE event_event_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.event_event_id_seq OWNER TO pandora;
+
+--
+-- Name: event_event_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE event_event_id_seq OWNED BY event_event.id;
+
+
+--
+-- Name: event_event_items; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE event_event_items (
+    id integer NOT NULL,
+    event_id integer NOT NULL,
+    item_id integer NOT NULL
+);
+
+
+ALTER TABLE public.event_event_items OWNER TO pandora;
+
+--
+-- Name: event_event_items_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE event_event_items_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.event_event_items_id_seq OWNER TO pandora;
+
+--
+-- Name: event_event_items_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE event_event_items_id_seq OWNED BY event_event_items.id;
+
+
+--
+-- Name: item_access; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE item_access (
+    id integer NOT NULL,
+    access timestamp with time zone NOT NULL,
+    item_id integer NOT NULL,
+    user_id integer,
+    accessed integer NOT NULL
+);
+
+
+ALTER TABLE public.item_access OWNER TO pandora;
+
+--
+-- Name: item_access_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE item_access_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.item_access_id_seq OWNER TO pandora;
+
+--
+-- Name: item_access_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE item_access_id_seq OWNED BY item_access.id;
+
+
+--
+-- Name: item_description; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE item_description (
+    id integer NOT NULL,
+    key character varying(200) NOT NULL,
+    value character varying(1000) NOT NULL,
+    description text NOT NULL
+);
+
+
+ALTER TABLE public.item_description OWNER TO pandora;
+
+--
+-- Name: item_description_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE item_description_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.item_description_id_seq OWNER TO pandora;
+
+--
+-- Name: item_description_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE item_description_id_seq OWNED BY item_description.id;
+
+
+--
+-- Name: item_facet; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE item_facet (
+    id integer NOT NULL,
+    item_id integer NOT NULL,
+    key character varying(200) NOT NULL,
+    value character varying(1000) NOT NULL,
+    sortvalue character varying(1000) NOT NULL
+);
+
+
+ALTER TABLE public.item_facet OWNER TO pandora;
+
+--
+-- Name: item_facet_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE item_facet_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.item_facet_id_seq OWNER TO pandora;
+
+--
+-- Name: item_facet_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE item_facet_id_seq OWNED BY item_facet.id;
+
+
+--
+-- Name: item_item; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE item_item (
+    id integer NOT NULL,
+    created timestamp with time zone NOT NULL,
+    modified timestamp with time zone NOT NULL,
+    user_id integer,
+    rendered boolean NOT NULL,
+    level integer NOT NULL,
+    "itemId" character varying(128) NOT NULL,
+    "oxdbId" character varying(42),
+    external_data text NOT NULL,
+    data text NOT NULL,
+    json text NOT NULL,
+    poster character varying(100) NOT NULL,
+    poster_source text NOT NULL,
+    poster_height integer NOT NULL,
+    poster_width integer NOT NULL,
+    poster_frame double precision NOT NULL,
+    icon character varying(100) NOT NULL,
+    torrent character varying(1000) NOT NULL,
+    stream_info text NOT NULL,
+    stream_aspect double precision NOT NULL
+);
+
+
+ALTER TABLE public.item_item OWNER TO pandora;
+
+--
+-- Name: item_item_groups; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE item_item_groups (
+    id integer NOT NULL,
+    item_id integer NOT NULL,
+    group_id integer NOT NULL
+);
+
+
+ALTER TABLE public.item_item_groups OWNER TO pandora;
+
+--
+-- Name: item_item_groups_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE item_item_groups_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.item_item_groups_id_seq OWNER TO pandora;
+
+--
+-- Name: item_item_groups_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE item_item_groups_id_seq OWNED BY item_item_groups.id;
+
+
+--
+-- Name: item_item_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE item_item_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.item_item_id_seq OWNER TO pandora;
+
+--
+-- Name: item_item_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE item_item_id_seq OWNED BY item_item.id;
+
+
+--
+-- Name: item_itemfind; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE item_itemfind (
+    id integer NOT NULL,
+    item_id integer NOT NULL,
+    key character varying(200) NOT NULL,
+    value text NOT NULL
+);
+
+
+ALTER TABLE public.item_itemfind OWNER TO pandora;
+
+--
+-- Name: item_itemfind_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE item_itemfind_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.item_itemfind_id_seq OWNER TO pandora;
+
+--
+-- Name: item_itemfind_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE item_itemfind_id_seq OWNED BY item_itemfind.id;
+
+
+--
+-- Name: item_itemsort; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE item_itemsort (
+    item_id integer NOT NULL,
+    duration double precision,
+    width bigint,
+    height bigint,
+    created timestamp with time zone,
+    title character varying(1000),
+    director character varying(1000),
+    featuring character varying(1000),
+    language character varying(1000),
+    country character varying(1000),
+    year character varying(4),
+    "itemId" character varying(1000),
+    numberofannotations bigint,
+    resolution bigint,
+    aspectratio double precision,
+    pixels bigint,
+    hue double precision,
+    saturation double precision,
+    lightness double precision,
+    volume double precision,
+    numberofcuts bigint,
+    cutsperminute double precision,
+    words bigint,
+    wordsperminute double precision,
+    size bigint,
+    bitrate bigint,
+    numberoffiles bigint,
+    modified timestamp with time zone,
+    accessed timestamp with time zone,
+    timesaccessed bigint,
+    rightslevel bigint,
+    random bigint
+);
+
+
+ALTER TABLE public.item_itemsort OWNER TO pandora;
+
+--
+-- Name: itemlist_list; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE itemlist_list (
+    id integer NOT NULL,
+    created timestamp with time zone NOT NULL,
+    modified timestamp with time zone NOT NULL,
+    user_id integer NOT NULL,
+    name character varying(255) NOT NULL,
+    status character varying(20) NOT NULL,
+    query text NOT NULL,
+    type character varying(255) NOT NULL,
+    description text NOT NULL,
+    icon character varying(100) NOT NULL,
+    view text NOT NULL,
+    sort text NOT NULL,
+    poster_frames text NOT NULL,
+    numberofitems integer NOT NULL
+);
+
+
+ALTER TABLE public.itemlist_list OWNER TO pandora;
+
+--
+-- Name: itemlist_list_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE itemlist_list_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.itemlist_list_id_seq OWNER TO pandora;
+
+--
+-- Name: itemlist_list_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE itemlist_list_id_seq OWNED BY itemlist_list.id;
+
+
+--
+-- Name: itemlist_list_subscribed_users; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE itemlist_list_subscribed_users (
+    id integer NOT NULL,
+    list_id integer NOT NULL,
+    user_id integer NOT NULL
+);
+
+
+ALTER TABLE public.itemlist_list_subscribed_users OWNER TO pandora;
+
+--
+-- Name: itemlist_list_subscribed_users_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE itemlist_list_subscribed_users_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.itemlist_list_subscribed_users_id_seq OWNER TO pandora;
+
+--
+-- Name: itemlist_list_subscribed_users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE itemlist_list_subscribed_users_id_seq OWNED BY itemlist_list_subscribed_users.id;
+
+
+--
+-- Name: itemlist_listitem; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE itemlist_listitem (
+    id integer NOT NULL,
+    created timestamp with time zone NOT NULL,
+    modified timestamp with time zone NOT NULL,
+    list_id integer NOT NULL,
+    item_id integer NOT NULL,
+    index integer NOT NULL
+);
+
+
+ALTER TABLE public.itemlist_listitem OWNER TO pandora;
+
+--
+-- Name: itemlist_listitem_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE itemlist_listitem_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.itemlist_listitem_id_seq OWNER TO pandora;
+
+--
+-- Name: itemlist_listitem_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE itemlist_listitem_id_seq OWNED BY itemlist_listitem.id;
+
+
+--
+-- Name: itemlist_position; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE itemlist_position (
+    id integer NOT NULL,
+    list_id integer NOT NULL,
+    user_id integer NOT NULL,
+    section character varying(255) NOT NULL,
+    "position" integer NOT NULL
+);
+
+
+ALTER TABLE public.itemlist_position OWNER TO pandora;
+
+--
+-- Name: itemlist_position_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE itemlist_position_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.itemlist_position_id_seq OWNER TO pandora;
+
+--
+-- Name: itemlist_position_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE itemlist_position_id_seq OWNED BY itemlist_position.id;
+
+
+--
+-- Name: log_log; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE log_log (
+    id integer NOT NULL,
+    created timestamp with time zone NOT NULL,
+    modified timestamp with time zone NOT NULL,
+    user_id integer,
+    url character varying(1000) NOT NULL,
+    line integer NOT NULL,
+    text text NOT NULL
+);
+
+
+ALTER TABLE public.log_log OWNER TO pandora;
+
+--
+-- Name: log_log_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE log_log_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.log_log_id_seq OWNER TO pandora;
+
+--
+-- Name: log_log_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE log_log_id_seq OWNED BY log_log.id;
+
+
+--
+-- Name: news_news; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE news_news (
+    id integer NOT NULL,
+    created timestamp with time zone NOT NULL,
+    modified timestamp with time zone NOT NULL,
+    title text NOT NULL,
+    date text NOT NULL,
+    text text NOT NULL
+);
+
+
+ALTER TABLE public.news_news OWNER TO pandora;
+
+--
+-- Name: news_news_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE news_news_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.news_news_id_seq OWNER TO pandora;
+
+--
+-- Name: news_news_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE news_news_id_seq OWNED BY news_news.id;
+
+
+--
+-- Name: person_person; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE person_person (
+    id integer NOT NULL,
+    name character varying(200) NOT NULL,
+    sortname character varying(200) NOT NULL,
+    sortsortname character varying(200) NOT NULL,
+    edited boolean NOT NULL,
+    numberofnames integer NOT NULL,
+    aliases text NOT NULL,
+    "imdbId" character varying(7) NOT NULL,
+    "wikipediaId" character varying(1000) NOT NULL
+);
+
+
+ALTER TABLE public.person_person OWNER TO pandora;
+
+--
+-- Name: person_person_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE person_person_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.person_person_id_seq OWNER TO pandora;
+
+--
+-- Name: person_person_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE person_person_id_seq OWNED BY person_person.id;
+
+
+--
+-- Name: place_place; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE place_place (
+    id integer NOT NULL,
+    created timestamp with time zone NOT NULL,
+    modified timestamp with time zone NOT NULL,
+    defined boolean NOT NULL,
+    user_id integer,
+    name character varying(1024) NOT NULL,
+    "alternativeNames" text NOT NULL,
+    name_sort character varying(200) NOT NULL,
+    name_find text NOT NULL,
+    geoname character varying(1024),
+    geoname_sort character varying(1024),
+    "countryCode" character varying(16) NOT NULL,
+    "wikipediaId" character varying(1000) NOT NULL,
+    type character varying(1000) NOT NULL,
+    south double precision,
+    west double precision,
+    north double precision,
+    east double precision,
+    lat double precision,
+    lng double precision,
+    area double precision,
+    matches integer NOT NULL
+);
+
+
+ALTER TABLE public.place_place OWNER TO pandora;
+
+--
+-- Name: place_place_annotations; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE place_place_annotations (
+    id integer NOT NULL,
+    place_id integer NOT NULL,
+    annotation_id integer NOT NULL
+);
+
+
+ALTER TABLE public.place_place_annotations OWNER TO pandora;
+
+--
+-- Name: place_place_annotations_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE place_place_annotations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.place_place_annotations_id_seq OWNER TO pandora;
+
+--
+-- Name: place_place_annotations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE place_place_annotations_id_seq OWNED BY place_place_annotations.id;
+
+
+--
+-- Name: place_place_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE place_place_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.place_place_id_seq OWNER TO pandora;
+
+--
+-- Name: place_place_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE place_place_id_seq OWNED BY place_place.id;
+
+
+--
+-- Name: place_place_items; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE place_place_items (
+    id integer NOT NULL,
+    place_id integer NOT NULL,
+    item_id integer NOT NULL
+);
+
+
+ALTER TABLE public.place_place_items OWNER TO pandora;
+
+--
+-- Name: place_place_items_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE place_place_items_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.place_place_items_id_seq OWNER TO pandora;
+
+--
+-- Name: place_place_items_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE place_place_items_id_seq OWNED BY place_place_items.id;
+
+
+--
+-- Name: sequence_sequence; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE sequence_sequence (
+    id integer NOT NULL,
+    sort_id integer,
+    start double precision NOT NULL,
+    "end" double precision NOT NULL,
+    duration double precision NOT NULL,
+    mode integer NOT NULL,
+    hash bigint NOT NULL
+);
+
+
+ALTER TABLE public.sequence_sequence OWNER TO pandora;
+
+--
+-- Name: sequence_sequence_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE sequence_sequence_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.sequence_sequence_id_seq OWNER TO pandora;
+
+--
+-- Name: sequence_sequence_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE sequence_sequence_id_seq OWNED BY sequence_sequence.id;
+
+
+--
+-- Name: south_migrationhistory; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE south_migrationhistory (
+    id integer NOT NULL,
+    app_name character varying(255) NOT NULL,
+    migration character varying(255) NOT NULL,
+    applied timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE public.south_migrationhistory OWNER TO pandora;
+
+--
+-- Name: south_migrationhistory_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE south_migrationhistory_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.south_migrationhistory_id_seq OWNER TO pandora;
+
+--
+-- Name: south_migrationhistory_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE south_migrationhistory_id_seq OWNED BY south_migrationhistory.id;
+
+
+--
+-- Name: text_position; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE text_position (
+    id integer NOT NULL,
+    text_id integer NOT NULL,
+    user_id integer NOT NULL,
+    section character varying(255) NOT NULL,
+    "position" integer NOT NULL
+);
+
+
+ALTER TABLE public.text_position OWNER TO pandora;
+
+--
+-- Name: text_position_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE text_position_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.text_position_id_seq OWNER TO pandora;
+
+--
+-- Name: text_position_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE text_position_id_seq OWNED BY text_position.id;
+
+
+--
+-- Name: text_text; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE text_text (
+    id integer NOT NULL,
+    created timestamp with time zone NOT NULL,
+    modified timestamp with time zone NOT NULL,
+    user_id integer NOT NULL,
+    text text NOT NULL,
+    name character varying(255) NOT NULL,
+    status character varying(20) NOT NULL,
+    description text NOT NULL,
+    icon character varying(100) NOT NULL,
+    poster_frames text NOT NULL,
+    type character varying(255) NOT NULL,
+    uploading boolean NOT NULL,
+    file character varying(100),
+    embeds text NOT NULL,
+    rightslevel integer NOT NULL
+);
+
+
+ALTER TABLE public.text_text OWNER TO pandora;
+
+--
+-- Name: text_text_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE text_text_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.text_text_id_seq OWNER TO pandora;
+
+--
+-- Name: text_text_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE text_text_id_seq OWNED BY text_text.id;
+
+
+--
+-- Name: text_text_subscribed_users; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE text_text_subscribed_users (
+    id integer NOT NULL,
+    text_id integer NOT NULL,
+    user_id integer NOT NULL
+);
+
+
+ALTER TABLE public.text_text_subscribed_users OWNER TO pandora;
+
+--
+-- Name: text_text_subscribed_users_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE text_text_subscribed_users_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.text_text_subscribed_users_id_seq OWNER TO pandora;
+
+--
+-- Name: text_text_subscribed_users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE text_text_subscribed_users_id_seq OWNED BY text_text_subscribed_users.id;
+
+
+--
+-- Name: title_title; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE title_title (
+    id integer NOT NULL,
+    title character varying(1000) NOT NULL,
+    sorttitle character varying(1000) NOT NULL,
+    sortsorttitle character varying(1000) NOT NULL,
+    edited boolean NOT NULL,
+    "imdbId" character varying(7) NOT NULL
+);
+
+
+ALTER TABLE public.title_title OWNER TO pandora;
+
+--
+-- Name: title_title_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE title_title_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.title_title_id_seq OWNER TO pandora;
+
+--
+-- Name: title_title_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE title_title_id_seq OWNED BY title_title.id;
+
+
+--
+-- Name: tv_channel; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE tv_channel (
+    id integer NOT NULL,
+    created timestamp with time zone NOT NULL,
+    modified timestamp with time zone NOT NULL,
+    run integer NOT NULL,
+    list_id integer
+);
+
+
+ALTER TABLE public.tv_channel OWNER TO pandora;
+
+--
+-- Name: tv_channel_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE tv_channel_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.tv_channel_id_seq OWNER TO pandora;
+
+--
+-- Name: tv_channel_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE tv_channel_id_seq OWNED BY tv_channel.id;
+
+
+--
+-- Name: tv_program; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE tv_program (
+    id integer NOT NULL,
+    created timestamp with time zone NOT NULL,
+    modified timestamp with time zone NOT NULL,
+    run integer NOT NULL,
+    start timestamp with time zone NOT NULL,
+    "end" timestamp with time zone NOT NULL,
+    item_id integer NOT NULL,
+    channel_id integer NOT NULL
+);
+
+
+ALTER TABLE public.tv_program OWNER TO pandora;
+
+--
+-- Name: tv_program_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE tv_program_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.tv_program_id_seq OWNER TO pandora;
+
+--
+-- Name: tv_program_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE tv_program_id_seq OWNED BY tv_program.id;
+
+
+--
+-- Name: urlalias_alias; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE urlalias_alias (
+    id integer NOT NULL,
+    url character varying(255) NOT NULL,
+    target character varying(255) NOT NULL
+);
+
+
+ALTER TABLE public.urlalias_alias OWNER TO pandora;
+
+--
+-- Name: urlalias_alias_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE urlalias_alias_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.urlalias_alias_id_seq OWNER TO pandora;
+
+--
+-- Name: urlalias_alias_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE urlalias_alias_id_seq OWNED BY urlalias_alias.id;
+
+
+--
+-- Name: urlalias_idalias; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE urlalias_idalias (
+    id integer NOT NULL,
+    old character varying(255) NOT NULL,
+    new character varying(255) NOT NULL
+);
+
+
+ALTER TABLE public.urlalias_idalias OWNER TO pandora;
+
+--
+-- Name: urlalias_idalias_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE urlalias_idalias_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.urlalias_idalias_id_seq OWNER TO pandora;
+
+--
+-- Name: urlalias_idalias_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE urlalias_idalias_id_seq OWNED BY urlalias_idalias.id;
+
+
+--
+-- Name: urlalias_layeralias; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE urlalias_layeralias (
+    id integer NOT NULL,
+    old character varying(255) NOT NULL,
+    new character varying(255) NOT NULL
+);
+
+
+ALTER TABLE public.urlalias_layeralias OWNER TO pandora;
+
+--
+-- Name: urlalias_layeralias_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE urlalias_layeralias_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.urlalias_layeralias_id_seq OWNER TO pandora;
+
+--
+-- Name: urlalias_layeralias_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE urlalias_layeralias_id_seq OWNED BY urlalias_layeralias.id;
+
+
+--
+-- Name: urlalias_listalias; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE urlalias_listalias (
+    id integer NOT NULL,
+    old character varying(255) NOT NULL,
+    new character varying(255) NOT NULL
+);
+
+
+ALTER TABLE public.urlalias_listalias OWNER TO pandora;
+
+--
+-- Name: urlalias_listalias_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE urlalias_listalias_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.urlalias_listalias_id_seq OWNER TO pandora;
+
+--
+-- Name: urlalias_listalias_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE urlalias_listalias_id_seq OWNED BY urlalias_listalias.id;
+
+
+--
+-- Name: user_sessiondata; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE user_sessiondata (
+    session_key character varying(40) NOT NULL,
+    user_id integer,
+    firstseen timestamp with time zone NOT NULL,
+    lastseen timestamp with time zone NOT NULL,
+    username character varying(255),
+    level integer NOT NULL,
+    timesseen integer NOT NULL,
+    ip character varying(255),
+    useragent character varying(255),
+    windowsize character varying(255),
+    screensize character varying(255),
+    info text NOT NULL,
+    location character varying(255),
+    location_sort character varying(255),
+    system character varying(255),
+    browser character varying(255),
+    numberoflists integer,
+    groupssort character varying(255)
+);
+
+
+ALTER TABLE public.user_sessiondata OWNER TO pandora;
+
+--
+-- Name: user_userprofile; Type: TABLE; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE TABLE user_userprofile (
+    id integer NOT NULL,
+    reset_code character varying(255),
+    user_id integer NOT NULL,
+    level integer NOT NULL,
+    files_updated timestamp with time zone NOT NULL,
+    newsletter boolean NOT NULL,
+    ui text NOT NULL,
+    preferences text NOT NULL,
+    notes text NOT NULL
+);
+
+
+ALTER TABLE public.user_userprofile OWNER TO pandora;
+
+--
+-- Name: user_userprofile_id_seq; Type: SEQUENCE; Schema: public; Owner: pandora
+--
+
+CREATE SEQUENCE user_userprofile_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.user_userprofile_id_seq OWNER TO pandora;
+
+--
+-- Name: user_userprofile_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: pandora
+--
+
+ALTER SEQUENCE user_userprofile_id_seq OWNED BY user_userprofile.id;
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY annotation_annotation ALTER COLUMN id SET DEFAULT nextval('annotation_annotation_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY app_page ALTER COLUMN id SET DEFAULT nextval('app_page_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY app_settings ALTER COLUMN id SET DEFAULT nextval('app_settings_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY archive_file ALTER COLUMN id SET DEFAULT nextval('archive_file_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY archive_frame ALTER COLUMN id SET DEFAULT nextval('archive_frame_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY archive_instance ALTER COLUMN id SET DEFAULT nextval('archive_instance_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY archive_stream ALTER COLUMN id SET DEFAULT nextval('archive_stream_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY archive_volume ALTER COLUMN id SET DEFAULT nextval('archive_volume_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY auth_group ALTER COLUMN id SET DEFAULT nextval('auth_group_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY auth_group_permissions ALTER COLUMN id SET DEFAULT nextval('auth_group_permissions_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY auth_permission ALTER COLUMN id SET DEFAULT nextval('auth_permission_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY auth_user ALTER COLUMN id SET DEFAULT nextval('auth_user_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY auth_user_groups ALTER COLUMN id SET DEFAULT nextval('auth_user_groups_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY auth_user_user_permissions ALTER COLUMN id SET DEFAULT nextval('auth_user_user_permissions_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY celery_taskmeta ALTER COLUMN id SET DEFAULT nextval('celery_taskmeta_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY celery_tasksetmeta ALTER COLUMN id SET DEFAULT nextval('celery_tasksetmeta_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY changelog_changelog ALTER COLUMN id SET DEFAULT nextval('changelog_changelog_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY clip_clip ALTER COLUMN id SET DEFAULT nextval('clip_clip_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY django_admin_log ALTER COLUMN id SET DEFAULT nextval('django_admin_log_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY django_content_type ALTER COLUMN id SET DEFAULT nextval('django_content_type_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY django_site ALTER COLUMN id SET DEFAULT nextval('django_site_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY djcelery_crontabschedule ALTER COLUMN id SET DEFAULT nextval('djcelery_crontabschedule_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY djcelery_intervalschedule ALTER COLUMN id SET DEFAULT nextval('djcelery_intervalschedule_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY djcelery_periodictask ALTER COLUMN id SET DEFAULT nextval('djcelery_periodictask_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY djcelery_taskstate ALTER COLUMN id SET DEFAULT nextval('djcelery_taskstate_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY djcelery_workerstate ALTER COLUMN id SET DEFAULT nextval('djcelery_workerstate_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY document_document ALTER COLUMN id SET DEFAULT nextval('document_document_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY document_itemproperties ALTER COLUMN id SET DEFAULT nextval('document_itemproperties_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY edit_clip ALTER COLUMN id SET DEFAULT nextval('edit_clip_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY edit_edit ALTER COLUMN id SET DEFAULT nextval('edit_edit_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY edit_edit_subscribed_users ALTER COLUMN id SET DEFAULT nextval('edit_edit_subscribed_users_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY edit_position ALTER COLUMN id SET DEFAULT nextval('edit_position_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY event_event ALTER COLUMN id SET DEFAULT nextval('event_event_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY event_event_annotations ALTER COLUMN id SET DEFAULT nextval('event_event_annotations_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY event_event_items ALTER COLUMN id SET DEFAULT nextval('event_event_items_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY item_access ALTER COLUMN id SET DEFAULT nextval('item_access_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY item_description ALTER COLUMN id SET DEFAULT nextval('item_description_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY item_facet ALTER COLUMN id SET DEFAULT nextval('item_facet_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY item_item ALTER COLUMN id SET DEFAULT nextval('item_item_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY item_item_groups ALTER COLUMN id SET DEFAULT nextval('item_item_groups_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY item_itemfind ALTER COLUMN id SET DEFAULT nextval('item_itemfind_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY itemlist_list ALTER COLUMN id SET DEFAULT nextval('itemlist_list_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY itemlist_list_subscribed_users ALTER COLUMN id SET DEFAULT nextval('itemlist_list_subscribed_users_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY itemlist_listitem ALTER COLUMN id SET DEFAULT nextval('itemlist_listitem_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY itemlist_position ALTER COLUMN id SET DEFAULT nextval('itemlist_position_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY log_log ALTER COLUMN id SET DEFAULT nextval('log_log_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY news_news ALTER COLUMN id SET DEFAULT nextval('news_news_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY person_person ALTER COLUMN id SET DEFAULT nextval('person_person_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY place_place ALTER COLUMN id SET DEFAULT nextval('place_place_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY place_place_annotations ALTER COLUMN id SET DEFAULT nextval('place_place_annotations_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY place_place_items ALTER COLUMN id SET DEFAULT nextval('place_place_items_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY sequence_sequence ALTER COLUMN id SET DEFAULT nextval('sequence_sequence_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY south_migrationhistory ALTER COLUMN id SET DEFAULT nextval('south_migrationhistory_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY text_position ALTER COLUMN id SET DEFAULT nextval('text_position_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY text_text ALTER COLUMN id SET DEFAULT nextval('text_text_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY text_text_subscribed_users ALTER COLUMN id SET DEFAULT nextval('text_text_subscribed_users_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY title_title ALTER COLUMN id SET DEFAULT nextval('title_title_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY tv_channel ALTER COLUMN id SET DEFAULT nextval('tv_channel_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY tv_program ALTER COLUMN id SET DEFAULT nextval('tv_program_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY urlalias_alias ALTER COLUMN id SET DEFAULT nextval('urlalias_alias_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY urlalias_idalias ALTER COLUMN id SET DEFAULT nextval('urlalias_idalias_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY urlalias_layeralias ALTER COLUMN id SET DEFAULT nextval('urlalias_layeralias_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY urlalias_listalias ALTER COLUMN id SET DEFAULT nextval('urlalias_listalias_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY user_userprofile ALTER COLUMN id SET DEFAULT nextval('user_userprofile_id_seq'::regclass);
+
+
+--
+-- Data for Name: annotation_annotation; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY annotation_annotation (id, created, modified, user_id, item_id, clip_id, public_id, start, "end", layer, value, findvalue, sortvalue) FROM stdin;
+\.
+
+
+--
+-- Name: annotation_annotation_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('annotation_annotation_id_seq', 1, false);
+
+
+--
+-- Data for Name: app_page; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY app_page (id, created, modified, name, text) FROM stdin;
+\.
+
+
+--
+-- Name: app_page_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('app_page_id_seq', 1, false);
+
+
+--
+-- Data for Name: app_settings; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY app_settings (id, created, modified, key, value) FROM stdin;
+\.
+
+
+--
+-- Name: app_settings_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('app_settings_id_seq', 1, false);
+
+
+--
+-- Data for Name: archive_file; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY archive_file (id, created, modified, oshash, item_id, path, sort_path, type, extension, language, part, part_title, version, size, duration, info, video_codec, pixel_format, display_aspect_ratio, width, height, framerate, audio_codec, channels, samplerate, bits_per_pixel, pixels, available, selected, uploading, wanted, is_audio, is_video, is_subtitle, data, encoding, queued, failed, is_image) FROM stdin;
+\.
+
+
+--
+-- Name: archive_file_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('archive_file_id_seq', 1, false);
+
+
+--
+-- Data for Name: archive_frame; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY archive_frame (id, created, modified, file_id, "position", frame) FROM stdin;
+\.
+
+
+--
+-- Name: archive_frame_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('archive_frame_id_seq', 1, false);
+
+
+--
+-- Data for Name: archive_instance; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY archive_instance (id, created, modified, atime, ctime, mtime, path, ignore, file_id, volume_id) FROM stdin;
+\.
+
+
+--
+-- Name: archive_instance_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('archive_instance_id_seq', 1, false);
+
+
+--
+-- Data for Name: archive_stream; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY archive_stream (id, file_id, resolution, format, media, source_id, available, oshash, info, duration, aspect_ratio, cuts, color, volume, error) FROM stdin;
+\.
+
+
+--
+-- Name: archive_stream_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('archive_stream_id_seq', 1, false);
+
+
+--
+-- Data for Name: archive_volume; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY archive_volume (id, created, modified, user_id, name) FROM stdin;
+\.
+
+
+--
+-- Name: archive_volume_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('archive_volume_id_seq', 1, false);
+
+
+--
+-- Data for Name: auth_group; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY auth_group (id, name) FROM stdin;
+\.
+
+
+--
+-- Name: auth_group_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('auth_group_id_seq', 1, false);
+
+
+--
+-- Data for Name: auth_group_permissions; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY auth_group_permissions (id, group_id, permission_id) FROM stdin;
+\.
+
+
+--
+-- Name: auth_group_permissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('auth_group_permissions_id_seq', 1, false);
+
+
+--
+-- Data for Name: auth_permission; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY auth_permission (id, name, content_type_id, codename) FROM stdin;
+1	Can add permission	1	add_permission
+2	Can change permission	1	change_permission
+3	Can delete permission	1	delete_permission
+4	Can add group	2	add_group
+5	Can change group	2	change_group
+6	Can delete group	2	delete_group
+7	Can add user	3	add_user
+8	Can change user	3	change_user
+9	Can delete user	3	delete_user
+10	Can add content type	4	add_contenttype
+11	Can change content type	4	change_contenttype
+12	Can delete content type	4	delete_contenttype
+13	Can add session	5	add_session
+14	Can change session	5	change_session
+15	Can delete session	5	delete_session
+16	Can add site	6	add_site
+17	Can change site	6	change_site
+18	Can delete site	6	delete_site
+19	Can add log entry	7	add_logentry
+20	Can change log entry	7	change_logentry
+21	Can delete log entry	7	delete_logentry
+22	Can add migration history	8	add_migrationhistory
+23	Can change migration history	8	change_migrationhistory
+24	Can delete migration history	8	delete_migrationhistory
+25	Can add task state	9	add_taskmeta
+26	Can change task state	9	change_taskmeta
+27	Can delete task state	9	delete_taskmeta
+28	Can add saved group result	10	add_tasksetmeta
+29	Can change saved group result	10	change_tasksetmeta
+30	Can delete saved group result	10	delete_tasksetmeta
+31	Can add interval	11	add_intervalschedule
+32	Can change interval	11	change_intervalschedule
+33	Can delete interval	11	delete_intervalschedule
+34	Can add crontab	12	add_crontabschedule
+35	Can change crontab	12	change_crontabschedule
+36	Can delete crontab	12	delete_crontabschedule
+37	Can add periodic tasks	13	add_periodictasks
+38	Can change periodic tasks	13	change_periodictasks
+39	Can delete periodic tasks	13	delete_periodictasks
+40	Can add periodic task	14	add_periodictask
+41	Can change periodic task	14	change_periodictask
+42	Can delete periodic task	14	delete_periodictask
+43	Can add worker	15	add_workerstate
+44	Can change worker	15	change_workerstate
+45	Can delete worker	15	delete_workerstate
+46	Can add task	16	add_taskstate
+47	Can change task	16	change_taskstate
+48	Can delete task	16	delete_taskstate
+49	Can add page	17	add_page
+50	Can change page	17	change_page
+51	Can delete page	17	delete_page
+52	Can add settings	18	add_settings
+53	Can change settings	18	change_settings
+54	Can delete settings	18	delete_settings
+55	Can add log	19	add_log
+56	Can change log	19	change_log
+57	Can delete log	19	delete_log
+58	Can add item	20	add_item
+59	Can change item	20	change_item
+60	Can delete item	20	delete_item
+61	Can add item find	21	add_itemfind
+62	Can change item find	21	change_itemfind
+63	Can delete item find	21	delete_itemfind
+64	Can add item sort	22	add_itemsort
+65	Can change item sort	22	change_itemsort
+66	Can delete item sort	22	delete_itemsort
+67	Can add access	23	add_access
+68	Can change access	23	change_access
+69	Can delete access	23	delete_access
+70	Can add facet	24	add_facet
+71	Can change facet	24	change_facet
+72	Can delete facet	24	delete_facet
+73	Can add description	25	add_description
+74	Can change description	25	change_description
+75	Can delete description	25	delete_description
+76	Can add clip	26	add_clip
+77	Can change clip	26	change_clip
+78	Can delete clip	26	delete_clip
+79	Can add random	27	add_random
+80	Can change random	27	change_random
+81	Can delete random	27	delete_random
+82	Can add annotation	28	add_annotation
+83	Can change annotation	28	change_annotation
+84	Can delete annotation	28	delete_annotation
+85	Can add sequence	29	add_sequence
+86	Can change sequence	29	change_sequence
+87	Can delete sequence	29	delete_sequence
+88	Can add file	30	add_file
+89	Can change file	30	change_file
+90	Can delete file	30	delete_file
+91	Can add volume	31	add_volume
+92	Can change volume	31	change_volume
+93	Can delete volume	31	delete_volume
+94	Can add instance	32	add_instance
+95	Can change instance	32	change_instance
+96	Can delete instance	32	delete_instance
+97	Can add frame	33	add_frame
+98	Can change frame	33	change_frame
+99	Can delete frame	33	delete_frame
+100	Can add stream	34	add_stream
+101	Can change stream	34	change_stream
+102	Can delete stream	34	delete_stream
+103	Can add event	35	add_event
+104	Can change event	35	change_event
+105	Can delete event	35	delete_event
+106	Can add changelog	36	add_changelog
+107	Can change changelog	36	change_changelog
+108	Can delete changelog	36	delete_changelog
+109	Can add list	37	add_list
+110	Can change list	37	change_list
+111	Can delete list	37	delete_list
+112	Can add list item	38	add_listitem
+113	Can change list item	38	change_listitem
+114	Can delete list item	38	delete_listitem
+115	Can add position	39	add_position
+116	Can change position	39	change_position
+117	Can delete position	39	delete_position
+118	Can add person	40	add_person
+119	Can change person	40	change_person
+120	Can delete person	40	delete_person
+121	Can add title	41	add_title
+122	Can change title	41	change_title
+123	Can delete title	41	delete_title
+124	Can add place	42	add_place
+125	Can change place	42	change_place
+126	Can delete place	42	delete_place
+127	Can add text	43	add_text
+128	Can change text	43	change_text
+129	Can delete text	43	delete_text
+130	Can add position	44	add_position
+131	Can change position	44	change_position
+132	Can delete position	44	delete_position
+133	Can add edit	45	add_edit
+134	Can change edit	45	change_edit
+135	Can delete edit	45	delete_edit
+136	Can add clip	46	add_clip
+137	Can change clip	46	change_clip
+138	Can delete clip	46	delete_clip
+139	Can add position	47	add_position
+140	Can change position	47	change_position
+141	Can delete position	47	delete_position
+142	Can add news	48	add_news
+143	Can change news	48	change_news
+144	Can delete news	48	delete_news
+145	Can add session data	49	add_sessiondata
+146	Can change session data	49	change_sessiondata
+147	Can delete session data	49	delete_sessiondata
+148	Can add user profile	50	add_userprofile
+149	Can change user profile	50	change_userprofile
+150	Can delete user profile	50	delete_userprofile
+151	Can add id alias	51	add_idalias
+152	Can change id alias	51	change_idalias
+153	Can delete id alias	51	delete_idalias
+154	Can add layer alias	52	add_layeralias
+155	Can change layer alias	52	change_layeralias
+156	Can delete layer alias	52	delete_layeralias
+157	Can add list alias	53	add_listalias
+158	Can change list alias	53	change_listalias
+159	Can delete list alias	53	delete_listalias
+160	Can add alias	54	add_alias
+161	Can change alias	54	change_alias
+162	Can delete alias	54	delete_alias
+163	Can add channel	55	add_channel
+164	Can change channel	55	change_channel
+165	Can delete channel	55	delete_channel
+166	Can add program	56	add_program
+167	Can change program	56	change_program
+168	Can delete program	56	delete_program
+169	Can add document	57	add_document
+170	Can change document	57	change_document
+171	Can delete document	57	delete_document
+172	Can add item properties	58	add_itemproperties
+173	Can change item properties	58	change_itemproperties
+174	Can delete item properties	58	delete_itemproperties
+\.
+
+
+--
+-- Name: auth_permission_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('auth_permission_id_seq', 174, true);
+
+
+--
+-- Data for Name: auth_user; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY auth_user (id, username, first_name, last_name, email, password, is_staff, is_active, is_superuser, last_login, date_joined) FROM stdin;
+\.
+
+
+--
+-- Data for Name: auth_user_groups; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY auth_user_groups (id, user_id, group_id) FROM stdin;
+\.
+
+
+--
+-- Name: auth_user_groups_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('auth_user_groups_id_seq', 1, false);
+
+
+--
+-- Name: auth_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('auth_user_id_seq', 1, false);
+
+
+--
+-- Data for Name: auth_user_user_permissions; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY auth_user_user_permissions (id, user_id, permission_id) FROM stdin;
+\.
+
+
+--
+-- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('auth_user_user_permissions_id_seq', 1, false);
+
+
+--
+-- Data for Name: celery_taskmeta; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY celery_taskmeta (id, task_id, status, result, date_done, traceback, hidden, meta) FROM stdin;
+1	ffac09ca-c6a6-499d-aa85-a296f7f20027	SUCCESS	\N	2013-11-20 12:57:46.017261+02	\N	f	eJxrYKotZAzlSM7IzEkpSs0rZIotZC7WAwBREgb9
+2	c5ddfb47-3177-46ae-a604-4196e73f9b3c	SUCCESS	\N	2013-11-20 12:57:50.352881+02	\N	f	eJxrYKotZAzlSM7IzEkpSs0rZIotZC7WAwBREgb9
+3	f691e6eb-e641-4170-bbab-bf36883e2d75	SUCCESS	\N	2013-11-20 13:07:18.442717+02	\N	f	eJxrYKotZAzlSM7IzEkpSs0rZIotZC7WAwBREgb9
+\.
+
+
+--
+-- Name: celery_taskmeta_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('celery_taskmeta_id_seq', 3, true);
+
+
+--
+-- Data for Name: celery_tasksetmeta; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY celery_tasksetmeta (id, taskset_id, result, date_done, hidden) FROM stdin;
+\.
+
+
+--
+-- Name: celery_tasksetmeta_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('celery_tasksetmeta_id_seq', 1, false);
+
+
+--
+-- Data for Name: changelog_changelog; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY changelog_changelog (id, created, type, value) FROM stdin;
+\.
+
+
+--
+-- Name: changelog_changelog_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('changelog_changelog_id_seq', 1, false);
+
+
+--
+-- Data for Name: clip_clip; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY clip_clip (id, created, modified, aspect_ratio, item_id, sort_id, "user", start, "end", duration, hue, saturation, lightness, volume, sortvalue, findvalue, subtitles, publicnotes, keywords) FROM stdin;
+\.
+
+
+--
+-- Name: clip_clip_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('clip_clip_id_seq', 1, false);
+
+
+--
+-- Data for Name: clip_random; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY clip_random (clip_id, random) FROM stdin;
+\.
+
+
+--
+-- Data for Name: django_admin_log; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY django_admin_log (id, action_time, user_id, content_type_id, object_id, object_repr, action_flag, change_message) FROM stdin;
+\.
+
+
+--
+-- Name: django_admin_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('django_admin_log_id_seq', 1, false);
+
+
+--
+-- Data for Name: django_content_type; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY django_content_type (id, name, app_label, model) FROM stdin;
+1	permission	auth	permission
+2	group	auth	group
+3	user	auth	user
+4	content type	contenttypes	contenttype
+5	session	sessions	session
+6	site	sites	site
+7	log entry	admin	logentry
+8	migration history	south	migrationhistory
+9	task state	djcelery	taskmeta
+10	saved group result	djcelery	tasksetmeta
+11	interval	djcelery	intervalschedule
+12	crontab	djcelery	crontabschedule
+13	periodic tasks	djcelery	periodictasks
+14	periodic task	djcelery	periodictask
+15	worker	djcelery	workerstate
+16	task	djcelery	taskstate
+17	page	app	page
+18	settings	app	settings
+19	log	log	log
+20	item	item	item
+21	item find	item	itemfind
+22	item sort	item	itemsort
+23	access	item	access
+24	facet	item	facet
+25	description	item	description
+26	clip	clip	clip
+27	random	clip	random
+28	annotation	annotation	annotation
+29	sequence	sequence	sequence
+30	file	archive	file
+31	volume	archive	volume
+32	instance	archive	instance
+33	frame	archive	frame
+34	stream	archive	stream
+35	event	event	event
+36	changelog	changelog	changelog
+37	list	itemlist	list
+38	list item	itemlist	listitem
+39	position	itemlist	position
+40	person	person	person
+41	title	title	title
+42	place	place	place
+43	text	text	text
+44	position	text	position
+45	edit	edit	edit
+46	clip	edit	clip
+47	position	edit	position
+48	news	news	news
+49	session data	user	sessiondata
+50	user profile	user	userprofile
+51	id alias	urlalias	idalias
+52	layer alias	urlalias	layeralias
+53	list alias	urlalias	listalias
+54	alias	urlalias	alias
+55	channel	tv	channel
+56	program	tv	program
+57	document	document	document
+58	item properties	document	itemproperties
+\.
+
+
+--
+-- Name: django_content_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('django_content_type_id_seq', 58, true);
+
+
+--
+-- Data for Name: django_session; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY django_session (session_key, session_data, expire_date) FROM stdin;
+d880b761cd686efbaa7c1987887eb098	ZGEyZGQ5ZGE1ZWYwNmMxMjYzODg2ZDUzNWNhNjdlMmJkMWYwZjhlMzqAAn1xAShVCWxhc3RfaW5p\ndFUaMjAxMy0xMS0yMCAxMTowNzoxOC40MDAyNzhVAnVpVbR7Imxpc3RzIjogeyIiOiB7InNvcnQi\nOiBbeyJvcGVyYXRvciI6ICIrIiwgImtleSI6ICJ0aXRsZSJ9XSwgImNvbHVtbldpZHRoIjoge30s\nICJzZWxlY3Rpb24iOiBbXSwgImNvbHVtbnMiOiBbInRpdGxlIiwgImRpcmVjdG9yIiwgInllYXIi\nLCAibGFuZ3VhZ2UiLCAiZHVyYXRpb24iXSwgInZpZXciOiAiZ3JpZCJ9fX11Lg==\n	2014-01-19 13:07:18.403973+02
+\.
+
+
+--
+-- Data for Name: django_site; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY django_site (id, domain, name) FROM stdin;
+1	example.com	example.com
+\.
+
+
+--
+-- Name: django_site_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('django_site_id_seq', 1, true);
+
+
+--
+-- Data for Name: djcelery_crontabschedule; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY djcelery_crontabschedule (id, minute, hour, day_of_week, day_of_month, month_of_year) FROM stdin;
+\.
+
+
+--
+-- Name: djcelery_crontabschedule_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('djcelery_crontabschedule_id_seq', 1, false);
+
+
+--
+-- Data for Name: djcelery_intervalschedule; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY djcelery_intervalschedule (id, every, period) FROM stdin;
+\.
+
+
+--
+-- Name: djcelery_intervalschedule_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('djcelery_intervalschedule_id_seq', 1, false);
+
+
+--
+-- Data for Name: djcelery_periodictask; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY djcelery_periodictask (id, name, task, interval_id, crontab_id, args, kwargs, queue, exchange, routing_key, expires, enabled, last_run_at, total_run_count, date_changed, description) FROM stdin;
+\.
+
+
+--
+-- Name: djcelery_periodictask_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('djcelery_periodictask_id_seq', 1, false);
+
+
+--
+-- Data for Name: djcelery_periodictasks; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY djcelery_periodictasks (ident, last_update) FROM stdin;
+\.
+
+
+--
+-- Data for Name: djcelery_taskstate; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY djcelery_taskstate (id, state, task_id, name, tstamp, args, kwargs, eta, expires, result, traceback, runtime, retries, worker_id, hidden) FROM stdin;
+\.
+
+
+--
+-- Name: djcelery_taskstate_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('djcelery_taskstate_id_seq', 1, false);
+
+
+--
+-- Data for Name: djcelery_workerstate; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY djcelery_workerstate (id, hostname, last_heartbeat) FROM stdin;
+\.
+
+
+--
+-- Name: djcelery_workerstate_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('djcelery_workerstate_id_seq', 1, false);
+
+
+--
+-- Data for Name: document_document; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY document_document (id, created, modified, user_id, name, extension, size, matches, ratio, description, oshash, file, uploading, name_sort, description_sort) FROM stdin;
+\.
+
+
+--
+-- Name: document_document_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('document_document_id_seq', 1, false);
+
+
+--
+-- Data for Name: document_itemproperties; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY document_itemproperties (id, created, modified, item_id, document_id, description, index) FROM stdin;
+\.
+
+
+--
+-- Name: document_itemproperties_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('document_itemproperties_id_seq', 1, false);
+
+
+--
+-- Data for Name: edit_clip; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY edit_clip (id, created, modified, edit_id, item_id, start, "end", index, annotation_id, duration, hue, saturation, lightness, volume) FROM stdin;
+\.
+
+
+--
+-- Name: edit_clip_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('edit_clip_id_seq', 1, false);
+
+
+--
+-- Data for Name: edit_edit; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY edit_edit (id, created, modified, user_id, name, status, description, rightslevel, icon, poster_frames) FROM stdin;
+\.
+
+
+--
+-- Name: edit_edit_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('edit_edit_id_seq', 1, false);
+
+
+--
+-- Data for Name: edit_edit_subscribed_users; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY edit_edit_subscribed_users (id, edit_id, user_id) FROM stdin;
+\.
+
+
+--
+-- Name: edit_edit_subscribed_users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('edit_edit_subscribed_users_id_seq', 1, false);
+
+
+--
+-- Data for Name: edit_position; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY edit_position (id, edit_id, user_id, section, "position") FROM stdin;
+\.
+
+
+--
+-- Name: edit_position_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('edit_position_id_seq', 1, false);
+
+
+--
+-- Data for Name: event_event; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY event_event (id, created, modified, defined, user_id, name, name_sort, name_find, "wikipediaId", "alternativeNames", start, "startTime", "end", "endTime", duration, "durationTime", type, matches) FROM stdin;
+\.
+
+
+--
+-- Data for Name: event_event_annotations; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY event_event_annotations (id, event_id, annotation_id) FROM stdin;
+\.
+
+
+--
+-- Name: event_event_annotations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('event_event_annotations_id_seq', 1, false);
+
+
+--
+-- Name: event_event_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('event_event_id_seq', 1, false);
+
+
+--
+-- Data for Name: event_event_items; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY event_event_items (id, event_id, item_id) FROM stdin;
+\.
+
+
+--
+-- Name: event_event_items_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('event_event_items_id_seq', 1, false);
+
+
+--
+-- Data for Name: item_access; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY item_access (id, access, item_id, user_id, accessed) FROM stdin;
+\.
+
+
+--
+-- Name: item_access_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('item_access_id_seq', 1, false);
+
+
+--
+-- Data for Name: item_description; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY item_description (id, key, value, description) FROM stdin;
+\.
+
+
+--
+-- Name: item_description_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('item_description_id_seq', 1, false);
+
+
+--
+-- Data for Name: item_facet; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY item_facet (id, item_id, key, value, sortvalue) FROM stdin;
+\.
+
+
+--
+-- Name: item_facet_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('item_facet_id_seq', 1, false);
+
+
+--
+-- Data for Name: item_item; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY item_item (id, created, modified, user_id, rendered, level, "itemId", "oxdbId", external_data, data, json, poster, poster_source, poster_height, poster_width, poster_frame, icon, torrent, stream_info, stream_aspect) FROM stdin;
+\.
+
+
+--
+-- Data for Name: item_item_groups; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY item_item_groups (id, item_id, group_id) FROM stdin;
+\.
+
+
+--
+-- Name: item_item_groups_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('item_item_groups_id_seq', 1, false);
+
+
+--
+-- Name: item_item_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('item_item_id_seq', 1, false);
+
+
+--
+-- Data for Name: item_itemfind; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY item_itemfind (id, item_id, key, value) FROM stdin;
+\.
+
+
+--
+-- Name: item_itemfind_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('item_itemfind_id_seq', 1, false);
+
+
+--
+-- Data for Name: item_itemsort; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY item_itemsort (item_id, duration, width, height, created, title, director, featuring, language, country, year, "itemId", numberofannotations, resolution, aspectratio, pixels, hue, saturation, lightness, volume, numberofcuts, cutsperminute, words, wordsperminute, size, bitrate, numberoffiles, modified, accessed, timesaccessed, rightslevel, random) FROM stdin;
+\.
+
+
+--
+-- Data for Name: itemlist_list; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY itemlist_list (id, created, modified, user_id, name, status, query, type, description, icon, view, sort, poster_frames, numberofitems) FROM stdin;
+\.
+
+
+--
+-- Name: itemlist_list_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('itemlist_list_id_seq', 1, false);
+
+
+--
+-- Data for Name: itemlist_list_subscribed_users; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY itemlist_list_subscribed_users (id, list_id, user_id) FROM stdin;
+\.
+
+
+--
+-- Name: itemlist_list_subscribed_users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('itemlist_list_subscribed_users_id_seq', 1, false);
+
+
+--
+-- Data for Name: itemlist_listitem; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY itemlist_listitem (id, created, modified, list_id, item_id, index) FROM stdin;
+\.
+
+
+--
+-- Name: itemlist_listitem_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('itemlist_listitem_id_seq', 1, false);
+
+
+--
+-- Data for Name: itemlist_position; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY itemlist_position (id, list_id, user_id, section, "position") FROM stdin;
+\.
+
+
+--
+-- Name: itemlist_position_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('itemlist_position_id_seq', 1, false);
+
+
+--
+-- Data for Name: log_log; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY log_log (id, created, modified, user_id, url, line, text) FROM stdin;
+\.
+
+
+--
+-- Name: log_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('log_log_id_seq', 1, false);
+
+
+--
+-- Data for Name: news_news; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY news_news (id, created, modified, title, date, text) FROM stdin;
+\.
+
+
+--
+-- Name: news_news_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('news_news_id_seq', 1, false);
+
+
+--
+-- Data for Name: person_person; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY person_person (id, name, sortname, sortsortname, edited, numberofnames, aliases, "imdbId", "wikipediaId") FROM stdin;
+\.
+
+
+--
+-- Name: person_person_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('person_person_id_seq', 1, false);
+
+
+--
+-- Data for Name: place_place; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY place_place (id, created, modified, defined, user_id, name, "alternativeNames", name_sort, name_find, geoname, geoname_sort, "countryCode", "wikipediaId", type, south, west, north, east, lat, lng, area, matches) FROM stdin;
+\.
+
+
+--
+-- Data for Name: place_place_annotations; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY place_place_annotations (id, place_id, annotation_id) FROM stdin;
+\.
+
+
+--
+-- Name: place_place_annotations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('place_place_annotations_id_seq', 1, false);
+
+
+--
+-- Name: place_place_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('place_place_id_seq', 1, false);
+
+
+--
+-- Data for Name: place_place_items; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY place_place_items (id, place_id, item_id) FROM stdin;
+\.
+
+
+--
+-- Name: place_place_items_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('place_place_items_id_seq', 1, false);
+
+
+--
+-- Data for Name: sequence_sequence; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY sequence_sequence (id, sort_id, start, "end", duration, mode, hash) FROM stdin;
+\.
+
+
+--
+-- Name: sequence_sequence_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('sequence_sequence_id_seq', 1, false);
+
+
+--
+-- Data for Name: south_migrationhistory; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY south_migrationhistory (id, app_name, migration, applied) FROM stdin;
+1	django_extensions	0001_empty	2013-11-20 12:56:25.871483+02
+2	djcelery	0001_initial	2013-11-20 12:56:26.804314+02
+3	djcelery	0002_v25_changes	2013-11-20 12:56:27.206773+02
+4	djcelery	0003_v26_changes	2013-11-20 12:56:27.375724+02
+5	djcelery	0004_v30_changes	2013-11-20 12:56:27.422293+02
+6	app	0001_initial	2013-11-20 12:56:27.721376+02
+7	app	0002_settings	2013-11-20 12:56:27.872814+02
+8	log	0001_initial	2013-11-20 12:56:28.161883+02
+9	item	0001_initial	2013-11-20 12:56:29.519841+02
+10	clip	0001_initial	2013-11-20 12:56:30.047809+02
+11	annotation	0001_initial	2013-11-20 12:56:30.457317+02
+12	sequence	0001_initial	2013-11-20 12:56:31.055709+02
+13	sequence	0002_optimize1	2013-11-20 12:56:31.503402+02
+14	sequence	0003_optimize2	2013-11-20 12:56:31.634659+02
+15	sequence	0004_optimize3	2013-11-20 12:56:31.696665+02
+16	archive	0001_initial	2013-11-20 12:56:32.603091+02
+17	archive	0002_path_info	2013-11-20 12:56:32.679864+02
+18	archive	0003_auto__del_field_file_path_info	2013-11-20 12:56:32.745998+02
+19	archive	0004_item_id_not_null	2013-11-20 12:56:32.81736+02
+20	archive	0005_data_folders	2013-11-20 12:56:32.898677+02
+21	archive	0006_encoding	2013-11-20 12:56:33.076874+02
+22	archive	0007_video_media	2013-11-20 12:56:33.237051+02
+23	archive	0008_state	2013-11-20 12:56:33.434044+02
+24	archive	0009_error	2013-11-20 12:56:33.817627+02
+25	event	0001_initial	2013-11-20 12:56:34.57936+02
+26	changelog	0001_initial	2013-11-20 12:56:34.829904+02
+27	item	0002_color	2013-11-20 12:56:35.00205+02
+28	item	0003_notes	2013-11-20 12:56:35.073272+02
+29	item	0004_dropnotes	2013-11-20 12:56:35.147387+02
+30	itemlist	0001_initial	2013-11-20 12:56:35.719736+02
+31	itemlist	0002_add_index	2013-11-20 12:56:35.883999+02
+32	person	0001_initial	2013-11-20 12:56:36.151714+02
+33	title	0001_initial	2013-11-20 12:56:36.376983+02
+34	place	0001_initial	2013-11-20 12:56:37.407161+02
+35	text	0001_initial	2013-11-20 12:56:37.78053+02
+36	text	0002_auto__del_image__del_attachment__add_position__add_unique_position_use	2013-11-20 12:56:38.492799+02
+37	text	0003_auto__add_field_text_type__add_field_text_links	2013-11-20 12:56:38.866993+02
+38	text	0004_auto__add_field_text_uploading__add_field_text_file	2013-11-20 12:56:38.997347+02
+39	text	0005_auto__add_field_text_embeds	2013-11-20 12:56:39.143918+02
+40	text	0006_add_rightslevel	2013-11-20 12:56:39.320935+02
+41	edit	0001_initial	2013-11-20 12:56:39.666411+02
+42	edit	0002_cleanup	2013-11-20 12:56:40.826848+02
+43	edit	0003_sort	2013-11-20 12:56:41.595956+02
+44	news	0001_initial	2013-11-20 12:56:41.825416+02
+45	user	0001_initial	2013-11-20 12:56:42.306799+02
+46	user	0002_level_index	2013-11-20 12:56:42.374238+02
+47	urlalias	0001_initial	2013-11-20 12:56:42.952465+02
+48	tv	0001_initial	2013-11-20 12:56:43.328061+02
+49	document	0001_initial	2013-11-20 12:56:43.657902+02
+50	document	0002_data_folders	2013-11-20 12:56:43.696595+02
+51	document	0003_rename	2013-11-20 12:56:43.735094+02
+52	document	0004_itemproperties	2013-11-20 12:56:43.942115+02
+\.
+
+
+--
+-- Name: south_migrationhistory_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('south_migrationhistory_id_seq', 52, true);
+
+
+--
+-- Data for Name: text_position; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY text_position (id, text_id, user_id, section, "position") FROM stdin;
+\.
+
+
+--
+-- Name: text_position_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('text_position_id_seq', 1, false);
+
+
+--
+-- Data for Name: text_text; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY text_text (id, created, modified, user_id, text, name, status, description, icon, poster_frames, type, uploading, file, embeds, rightslevel) FROM stdin;
+\.
+
+
+--
+-- Name: text_text_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('text_text_id_seq', 1, false);
+
+
+--
+-- Data for Name: text_text_subscribed_users; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY text_text_subscribed_users (id, text_id, user_id) FROM stdin;
+\.
+
+
+--
+-- Name: text_text_subscribed_users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('text_text_subscribed_users_id_seq', 1, false);
+
+
+--
+-- Data for Name: title_title; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY title_title (id, title, sorttitle, sortsorttitle, edited, "imdbId") FROM stdin;
+\.
+
+
+--
+-- Name: title_title_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('title_title_id_seq', 1, false);
+
+
+--
+-- Data for Name: tv_channel; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY tv_channel (id, created, modified, run, list_id) FROM stdin;
+\.
+
+
+--
+-- Name: tv_channel_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('tv_channel_id_seq', 1, false);
+
+
+--
+-- Data for Name: tv_program; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY tv_program (id, created, modified, run, start, "end", item_id, channel_id) FROM stdin;
+\.
+
+
+--
+-- Name: tv_program_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('tv_program_id_seq', 1, false);
+
+
+--
+-- Data for Name: urlalias_alias; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY urlalias_alias (id, url, target) FROM stdin;
+\.
+
+
+--
+-- Name: urlalias_alias_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('urlalias_alias_id_seq', 1, false);
+
+
+--
+-- Data for Name: urlalias_idalias; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY urlalias_idalias (id, old, new) FROM stdin;
+\.
+
+
+--
+-- Name: urlalias_idalias_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('urlalias_idalias_id_seq', 1, false);
+
+
+--
+-- Data for Name: urlalias_layeralias; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY urlalias_layeralias (id, old, new) FROM stdin;
+\.
+
+
+--
+-- Name: urlalias_layeralias_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('urlalias_layeralias_id_seq', 1, false);
+
+
+--
+-- Data for Name: urlalias_listalias; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY urlalias_listalias (id, old, new) FROM stdin;
+\.
+
+
+--
+-- Name: urlalias_listalias_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('urlalias_listalias_id_seq', 1, false);
+
+
+--
+-- Data for Name: user_sessiondata; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY user_sessiondata (session_key, user_id, firstseen, lastseen, username, level, timesseen, ip, useragent, windowsize, screensize, info, location, location_sort, system, browser, numberoflists, groupssort) FROM stdin;
+446e6217a3aab44ed421d6d510621492	\N	2013-11-20 12:57:45.90518+02	2013-11-20 12:57:45.914383+02	\N	0	1	127.0.0.1	Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:25.0) Gecko/20100101 Firefox/25.0	1366×692	\N	{"screen": {}, "window": {"innerHeight": 572, "outerWidth": 1366, "innerWidth": 1366, "outerHeight": 692}, "location": {"href": "http://127.0.0.1/grid/title#"}, "time": 0.066, "navigator": {"userAgent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:25.0) Gecko/20100101 Firefox/25.0", "cookieEnabled": true, "plugins": ["Shockwave Flash", "Java(TM) Plug-in 10.45.2", "DivX\\u00ae Web Player", "Windows Media Player Plug-in 10 (compatible; Totem)", "VLC Multimedia Plugin (compatible Totem 3.4.3)", "QuickTime Plug-in 7.6.6", "iTunes Application Detector", "Gnome Shell Integration"]}, "document": {"referrer": ""}, "history": {"length": 50}}	\N	\N	linux (ubuntu)	firefox 25	0	\N
+d880b761cd686efbaa7c1987887eb098	\N	2013-11-20 12:57:50.243831+02	2013-11-20 13:07:18.372096+02	\N	0	2	127.0.0.1	Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:25.0) Gecko/20100101 Firefox/25.0	1366×692	\N	{"screen": {}, "window": {"innerHeight": 572, "outerWidth": 1366, "innerWidth": 1366, "outerHeight": 692}, "location": {"href": "http://127.0.0.1/grid/title#"}, "time": 0.018, "navigator": {"userAgent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:25.0) Gecko/20100101 Firefox/25.0", "cookieEnabled": true, "plugins": ["Shockwave Flash", "Java(TM) Plug-in 10.45.2", "DivX\\u00ae Web Player", "Windows Media Player Plug-in 10 (compatible; Totem)", "VLC Multimedia Plugin (compatible Totem 3.4.3)", "QuickTime Plug-in 7.6.6", "iTunes Application Detector", "Gnome Shell Integration"]}, "document": {"referrer": ""}, "history": {"length": 50}}	\N	\N	linux (ubuntu)	firefox 25	0	\N
+\.
+
+
+--
+-- Data for Name: user_userprofile; Type: TABLE DATA; Schema: public; Owner: pandora
+--
+
+COPY user_userprofile (id, reset_code, user_id, level, files_updated, newsletter, ui, preferences, notes) FROM stdin;
+\.
+
+
+--
+-- Name: user_userprofile_id_seq; Type: SEQUENCE SET; Schema: public; Owner: pandora
+--
+
+SELECT pg_catalog.setval('user_userprofile_id_seq', 1, false);
+
+
+--
+-- Name: annotation_annotation_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY annotation_annotation
+    ADD CONSTRAINT annotation_annotation_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: annotation_annotation_public_id_key; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY annotation_annotation
+    ADD CONSTRAINT annotation_annotation_public_id_key UNIQUE (public_id);
+
+
+--
+-- Name: app_page_name_key; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY app_page
+    ADD CONSTRAINT app_page_name_key UNIQUE (name);
+
+
+--
+-- Name: app_page_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY app_page
+    ADD CONSTRAINT app_page_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: app_settings_key_key; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY app_settings
+    ADD CONSTRAINT app_settings_key_key UNIQUE (key);
+
+
+--
+-- Name: app_settings_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY app_settings
+    ADD CONSTRAINT app_settings_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: archive_file_oshash_key; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY archive_file
+    ADD CONSTRAINT archive_file_oshash_key UNIQUE (oshash);
+
+
+--
+-- Name: archive_file_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY archive_file
+    ADD CONSTRAINT archive_file_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: archive_frame_file_id_507a26fc3c634771_uniq; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY archive_frame
+    ADD CONSTRAINT archive_frame_file_id_507a26fc3c634771_uniq UNIQUE (file_id, "position");
+
+
+--
+-- Name: archive_frame_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY archive_frame
+    ADD CONSTRAINT archive_frame_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: archive_instance_path_2ebe95be61ef7d2c_uniq; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY archive_instance
+    ADD CONSTRAINT archive_instance_path_2ebe95be61ef7d2c_uniq UNIQUE (path, volume_id);
+
+
+--
+-- Name: archive_instance_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY archive_instance
+    ADD CONSTRAINT archive_instance_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: archive_stream_file_id_59245c48f209472c_uniq; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY archive_stream
+    ADD CONSTRAINT archive_stream_file_id_59245c48f209472c_uniq UNIQUE (file_id, resolution, format);
+
+
+--
+-- Name: archive_stream_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY archive_stream
+    ADD CONSTRAINT archive_stream_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: archive_volume_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY archive_volume
+    ADD CONSTRAINT archive_volume_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: archive_volume_user_id_2e4b95302cbf947e_uniq; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY archive_volume
+    ADD CONSTRAINT archive_volume_user_id_2e4b95302cbf947e_uniq UNIQUE (user_id, name);
+
+
+--
+-- Name: auth_group_name_key; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_group
+    ADD CONSTRAINT auth_group_name_key UNIQUE (name);
+
+
+--
+-- Name: auth_group_permissions_group_id_permission_id_key; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_group_permissions
+    ADD CONSTRAINT auth_group_permissions_group_id_permission_id_key UNIQUE (group_id, permission_id);
+
+
+--
+-- Name: auth_group_permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_group_permissions
+    ADD CONSTRAINT auth_group_permissions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_group_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_group
+    ADD CONSTRAINT auth_group_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_permission_content_type_id_codename_key; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_permission
+    ADD CONSTRAINT auth_permission_content_type_id_codename_key UNIQUE (content_type_id, codename);
+
+
+--
+-- Name: auth_permission_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_permission
+    ADD CONSTRAINT auth_permission_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_user_groups_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_user_groups
+    ADD CONSTRAINT auth_user_groups_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_user_groups_user_id_group_id_key; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_user_groups
+    ADD CONSTRAINT auth_user_groups_user_id_group_id_key UNIQUE (user_id, group_id);
+
+
+--
+-- Name: auth_user_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_user
+    ADD CONSTRAINT auth_user_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_user_user_permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permissions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_user_user_permissions_user_id_permission_id_key; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permissions_user_id_permission_id_key UNIQUE (user_id, permission_id);
+
+
+--
+-- Name: auth_user_username_key; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_user
+    ADD CONSTRAINT auth_user_username_key UNIQUE (username);
+
+
+--
+-- Name: celery_taskmeta_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY celery_taskmeta
+    ADD CONSTRAINT celery_taskmeta_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: celery_taskmeta_task_id_key; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY celery_taskmeta
+    ADD CONSTRAINT celery_taskmeta_task_id_key UNIQUE (task_id);
+
+
+--
+-- Name: celery_tasksetmeta_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY celery_tasksetmeta
+    ADD CONSTRAINT celery_tasksetmeta_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: celery_tasksetmeta_taskset_id_key; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY celery_tasksetmeta
+    ADD CONSTRAINT celery_tasksetmeta_taskset_id_key UNIQUE (taskset_id);
+
+
+--
+-- Name: changelog_changelog_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY changelog_changelog
+    ADD CONSTRAINT changelog_changelog_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: clip_clip_item_id_1c3629dd76bacfa_uniq; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY clip_clip
+    ADD CONSTRAINT clip_clip_item_id_1c3629dd76bacfa_uniq UNIQUE (item_id, start, "end");
+
+
+--
+-- Name: clip_clip_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY clip_clip
+    ADD CONSTRAINT clip_clip_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: clip_random_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY clip_random
+    ADD CONSTRAINT clip_random_pkey PRIMARY KEY (clip_id);
+
+
+--
+-- Name: django_admin_log_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY django_admin_log
+    ADD CONSTRAINT django_admin_log_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: django_content_type_app_label_model_key; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY django_content_type
+    ADD CONSTRAINT django_content_type_app_label_model_key UNIQUE (app_label, model);
+
+
+--
+-- Name: django_content_type_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY django_content_type
+    ADD CONSTRAINT django_content_type_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: django_session_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY django_session
+    ADD CONSTRAINT django_session_pkey PRIMARY KEY (session_key);
+
+
+--
+-- Name: django_site_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY django_site
+    ADD CONSTRAINT django_site_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: djcelery_crontabschedule_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY djcelery_crontabschedule
+    ADD CONSTRAINT djcelery_crontabschedule_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: djcelery_intervalschedule_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY djcelery_intervalschedule
+    ADD CONSTRAINT djcelery_intervalschedule_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: djcelery_periodictask_name_key; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY djcelery_periodictask
+    ADD CONSTRAINT djcelery_periodictask_name_key UNIQUE (name);
+
+
+--
+-- Name: djcelery_periodictask_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY djcelery_periodictask
+    ADD CONSTRAINT djcelery_periodictask_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: djcelery_periodictasks_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY djcelery_periodictasks
+    ADD CONSTRAINT djcelery_periodictasks_pkey PRIMARY KEY (ident);
+
+
+--
+-- Name: djcelery_taskstate_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY djcelery_taskstate
+    ADD CONSTRAINT djcelery_taskstate_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: djcelery_taskstate_task_id_key; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY djcelery_taskstate
+    ADD CONSTRAINT djcelery_taskstate_task_id_key UNIQUE (task_id);
+
+
+--
+-- Name: djcelery_workerstate_hostname_key; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY djcelery_workerstate
+    ADD CONSTRAINT djcelery_workerstate_hostname_key UNIQUE (hostname);
+
+
+--
+-- Name: djcelery_workerstate_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY djcelery_workerstate
+    ADD CONSTRAINT djcelery_workerstate_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: document_itemproperties_item_id_6a66fa9d0ab9d069_uniq; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY document_itemproperties
+    ADD CONSTRAINT document_itemproperties_item_id_6a66fa9d0ab9d069_uniq UNIQUE (item_id, document_id);
+
+
+--
+-- Name: document_itemproperties_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY document_itemproperties
+    ADD CONSTRAINT document_itemproperties_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: edit_clip_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY edit_clip
+    ADD CONSTRAINT edit_clip_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: edit_edit_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY edit_edit
+    ADD CONSTRAINT edit_edit_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: edit_edit_subscribed_users_edit_id_4b5577107530a1a6_uniq; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY edit_edit_subscribed_users
+    ADD CONSTRAINT edit_edit_subscribed_users_edit_id_4b5577107530a1a6_uniq UNIQUE (edit_id, user_id);
+
+
+--
+-- Name: edit_edit_subscribed_users_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY edit_edit_subscribed_users
+    ADD CONSTRAINT edit_edit_subscribed_users_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: edit_edit_user_id_4329eba6c5316ff3_uniq; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY edit_edit
+    ADD CONSTRAINT edit_edit_user_id_4329eba6c5316ff3_uniq UNIQUE (user_id, name);
+
+
+--
+-- Name: edit_position_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY edit_position
+    ADD CONSTRAINT edit_position_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: edit_position_user_id_5be1ab7fec6bf969_uniq; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY edit_position
+    ADD CONSTRAINT edit_position_user_id_5be1ab7fec6bf969_uniq UNIQUE (user_id, edit_id, section);
+
+
+--
+-- Name: event_event_annotations_event_id_1acbf9a79d9b35bb_uniq; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY event_event_annotations
+    ADD CONSTRAINT event_event_annotations_event_id_1acbf9a79d9b35bb_uniq UNIQUE (event_id, annotation_id);
+
+
+--
+-- Name: event_event_annotations_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY event_event_annotations
+    ADD CONSTRAINT event_event_annotations_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: event_event_items_event_id_46158273974a3641_uniq; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY event_event_items
+    ADD CONSTRAINT event_event_items_event_id_46158273974a3641_uniq UNIQUE (event_id, item_id);
+
+
+--
+-- Name: event_event_items_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY event_event_items
+    ADD CONSTRAINT event_event_items_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: event_event_name_key; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY event_event
+    ADD CONSTRAINT event_event_name_key UNIQUE (name);
+
+
+--
+-- Name: event_event_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY event_event
+    ADD CONSTRAINT event_event_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: file_file_oshash_key; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY document_document
+    ADD CONSTRAINT file_file_oshash_key UNIQUE (oshash);
+
+
+--
+-- Name: file_file_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY document_document
+    ADD CONSTRAINT file_file_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: file_file_user_id_1e429f416c5f422a_uniq; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY document_document
+    ADD CONSTRAINT file_file_user_id_1e429f416c5f422a_uniq UNIQUE (user_id, name, extension);
+
+
+--
+-- Name: item_access_item_id_14c3b1404a419c13_uniq; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY item_access
+    ADD CONSTRAINT item_access_item_id_14c3b1404a419c13_uniq UNIQUE (item_id, user_id);
+
+
+--
+-- Name: item_access_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY item_access
+    ADD CONSTRAINT item_access_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: item_description_key_4eda17dd4de4c2d0_uniq; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY item_description
+    ADD CONSTRAINT item_description_key_4eda17dd4de4c2d0_uniq UNIQUE (key, value);
+
+
+--
+-- Name: item_description_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY item_description
+    ADD CONSTRAINT item_description_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: item_facet_item_id_67f65a5220331bac_uniq; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY item_facet
+    ADD CONSTRAINT item_facet_item_id_67f65a5220331bac_uniq UNIQUE (item_id, key, value);
+
+
+--
+-- Name: item_facet_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY item_facet
+    ADD CONSTRAINT item_facet_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: item_item_groups_item_id_73e4b11f5d967e2f_uniq; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY item_item_groups
+    ADD CONSTRAINT item_item_groups_item_id_73e4b11f5d967e2f_uniq UNIQUE (item_id, group_id);
+
+
+--
+-- Name: item_item_groups_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY item_item_groups
+    ADD CONSTRAINT item_item_groups_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: item_item_itemId_key; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY item_item
+    ADD CONSTRAINT "item_item_itemId_key" UNIQUE ("itemId");
+
+
+--
+-- Name: item_item_oxdbId_key; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY item_item
+    ADD CONSTRAINT "item_item_oxdbId_key" UNIQUE ("oxdbId");
+
+
+--
+-- Name: item_item_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY item_item
+    ADD CONSTRAINT item_item_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: item_itemfind_item_id_49c1448c9c30ee31_uniq; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY item_itemfind
+    ADD CONSTRAINT item_itemfind_item_id_49c1448c9c30ee31_uniq UNIQUE (item_id, key);
+
+
+--
+-- Name: item_itemfind_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY item_itemfind
+    ADD CONSTRAINT item_itemfind_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: item_itemsort_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY item_itemsort
+    ADD CONSTRAINT item_itemsort_pkey PRIMARY KEY (item_id);
+
+
+--
+-- Name: itemlist_list_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY itemlist_list
+    ADD CONSTRAINT itemlist_list_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: itemlist_list_subscribed_users_list_id_302e0b580f23ed99_uniq; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY itemlist_list_subscribed_users
+    ADD CONSTRAINT itemlist_list_subscribed_users_list_id_302e0b580f23ed99_uniq UNIQUE (list_id, user_id);
+
+
+--
+-- Name: itemlist_list_subscribed_users_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY itemlist_list_subscribed_users
+    ADD CONSTRAINT itemlist_list_subscribed_users_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: itemlist_list_user_id_5ebc6a9949447d26_uniq; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY itemlist_list
+    ADD CONSTRAINT itemlist_list_user_id_5ebc6a9949447d26_uniq UNIQUE (user_id, name);
+
+
+--
+-- Name: itemlist_listitem_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY itemlist_listitem
+    ADD CONSTRAINT itemlist_listitem_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: itemlist_position_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY itemlist_position
+    ADD CONSTRAINT itemlist_position_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: itemlist_position_user_id_1782213df86537bc_uniq; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY itemlist_position
+    ADD CONSTRAINT itemlist_position_user_id_1782213df86537bc_uniq UNIQUE (user_id, list_id, section);
+
+
+--
+-- Name: log_log_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY log_log
+    ADD CONSTRAINT log_log_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: news_news_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY news_news
+    ADD CONSTRAINT news_news_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: person_person_name_key; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY person_person
+    ADD CONSTRAINT person_person_name_key UNIQUE (name);
+
+
+--
+-- Name: person_person_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY person_person
+    ADD CONSTRAINT person_person_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: place_place_annotations_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY place_place_annotations
+    ADD CONSTRAINT place_place_annotations_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: place_place_annotations_place_id_6631049c7c87327e_uniq; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY place_place_annotations
+    ADD CONSTRAINT place_place_annotations_place_id_6631049c7c87327e_uniq UNIQUE (place_id, annotation_id);
+
+
+--
+-- Name: place_place_items_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY place_place_items
+    ADD CONSTRAINT place_place_items_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: place_place_items_place_id_7a43b9d6f850d06e_uniq; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY place_place_items
+    ADD CONSTRAINT place_place_items_place_id_7a43b9d6f850d06e_uniq UNIQUE (place_id, item_id);
+
+
+--
+-- Name: place_place_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY place_place
+    ADD CONSTRAINT place_place_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: sequence_sequence_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY sequence_sequence
+    ADD CONSTRAINT sequence_sequence_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: south_migrationhistory_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY south_migrationhistory
+    ADD CONSTRAINT south_migrationhistory_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: text_position_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY text_position
+    ADD CONSTRAINT text_position_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: text_position_user_id_29ef25079fb8032b_uniq; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY text_position
+    ADD CONSTRAINT text_position_user_id_29ef25079fb8032b_uniq UNIQUE (user_id, text_id, section);
+
+
+--
+-- Name: text_text_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY text_text
+    ADD CONSTRAINT text_text_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: text_text_subscribed_users_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY text_text_subscribed_users
+    ADD CONSTRAINT text_text_subscribed_users_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: text_text_subscribed_users_text_id_7506b278adf6a64b_uniq; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY text_text_subscribed_users
+    ADD CONSTRAINT text_text_subscribed_users_text_id_7506b278adf6a64b_uniq UNIQUE (text_id, user_id);
+
+
+--
+-- Name: text_text_user_id_4e1fddfe5f14888f_uniq; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY text_text
+    ADD CONSTRAINT text_text_user_id_4e1fddfe5f14888f_uniq UNIQUE (user_id, name);
+
+
+--
+-- Name: title_title_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY title_title
+    ADD CONSTRAINT title_title_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: title_title_title_key; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY title_title
+    ADD CONSTRAINT title_title_title_key UNIQUE (title);
+
+
+--
+-- Name: tv_channel_list_id_key; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY tv_channel
+    ADD CONSTRAINT tv_channel_list_id_key UNIQUE (list_id);
+
+
+--
+-- Name: tv_channel_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY tv_channel
+    ADD CONSTRAINT tv_channel_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: tv_program_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY tv_program
+    ADD CONSTRAINT tv_program_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: urlalias_alias_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY urlalias_alias
+    ADD CONSTRAINT urlalias_alias_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: urlalias_alias_url_key; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY urlalias_alias
+    ADD CONSTRAINT urlalias_alias_url_key UNIQUE (url);
+
+
+--
+-- Name: urlalias_idalias_old_key; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY urlalias_idalias
+    ADD CONSTRAINT urlalias_idalias_old_key UNIQUE (old);
+
+
+--
+-- Name: urlalias_idalias_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY urlalias_idalias
+    ADD CONSTRAINT urlalias_idalias_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: urlalias_layeralias_old_key; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY urlalias_layeralias
+    ADD CONSTRAINT urlalias_layeralias_old_key UNIQUE (old);
+
+
+--
+-- Name: urlalias_layeralias_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY urlalias_layeralias
+    ADD CONSTRAINT urlalias_layeralias_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: urlalias_listalias_old_key; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY urlalias_listalias
+    ADD CONSTRAINT urlalias_listalias_old_key UNIQUE (old);
+
+
+--
+-- Name: urlalias_listalias_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY urlalias_listalias
+    ADD CONSTRAINT urlalias_listalias_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: user_sessiondata_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY user_sessiondata
+    ADD CONSTRAINT user_sessiondata_pkey PRIMARY KEY (session_key);
+
+
+--
+-- Name: user_sessiondata_user_id_key; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY user_sessiondata
+    ADD CONSTRAINT user_sessiondata_user_id_key UNIQUE (user_id);
+
+
+--
+-- Name: user_userprofile_pkey; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY user_userprofile
+    ADD CONSTRAINT user_userprofile_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: user_userprofile_reset_code_key; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY user_userprofile
+    ADD CONSTRAINT user_userprofile_reset_code_key UNIQUE (reset_code);
+
+
+--
+-- Name: user_userprofile_user_id_key; Type: CONSTRAINT; Schema: public; Owner: pandora; Tablespace: 
+--
+
+ALTER TABLE ONLY user_userprofile
+    ADD CONSTRAINT user_userprofile_user_id_key UNIQUE (user_id);
+
+
+--
+-- Name: annotation_annotation_clip_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX annotation_annotation_clip_id ON annotation_annotation USING btree (clip_id);
+
+
+--
+-- Name: annotation_annotation_end; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX annotation_annotation_end ON annotation_annotation USING btree ("end");
+
+
+--
+-- Name: annotation_annotation_item_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX annotation_annotation_item_id ON annotation_annotation USING btree (item_id);
+
+
+--
+-- Name: annotation_annotation_layer; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX annotation_annotation_layer ON annotation_annotation USING btree (layer);
+
+
+--
+-- Name: annotation_annotation_layer_like; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX annotation_annotation_layer_like ON annotation_annotation USING btree (layer varchar_pattern_ops);
+
+
+--
+-- Name: annotation_annotation_sortvalue; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX annotation_annotation_sortvalue ON annotation_annotation USING btree (sortvalue);
+
+
+--
+-- Name: annotation_annotation_sortvalue_like; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX annotation_annotation_sortvalue_like ON annotation_annotation USING btree (sortvalue varchar_pattern_ops);
+
+
+--
+-- Name: annotation_annotation_start; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX annotation_annotation_start ON annotation_annotation USING btree (start);
+
+
+--
+-- Name: annotation_annotation_user_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX annotation_annotation_user_id ON annotation_annotation USING btree (user_id);
+
+
+--
+-- Name: archive_file_item_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX archive_file_item_id ON archive_file USING btree (item_id);
+
+
+--
+-- Name: archive_frame_file_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX archive_frame_file_id ON archive_frame USING btree (file_id);
+
+
+--
+-- Name: archive_instance_file_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX archive_instance_file_id ON archive_instance USING btree (file_id);
+
+
+--
+-- Name: archive_instance_volume_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX archive_instance_volume_id ON archive_instance USING btree (volume_id);
+
+
+--
+-- Name: archive_stream_file_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX archive_stream_file_id ON archive_stream USING btree (file_id);
+
+
+--
+-- Name: archive_stream_oshash; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX archive_stream_oshash ON archive_stream USING btree (oshash);
+
+
+--
+-- Name: archive_stream_oshash_like; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX archive_stream_oshash_like ON archive_stream USING btree (oshash varchar_pattern_ops);
+
+
+--
+-- Name: archive_stream_source_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX archive_stream_source_id ON archive_stream USING btree (source_id);
+
+
+--
+-- Name: archive_volume_user_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX archive_volume_user_id ON archive_volume USING btree (user_id);
+
+
+--
+-- Name: auth_group_permissions_group_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX auth_group_permissions_group_id ON auth_group_permissions USING btree (group_id);
+
+
+--
+-- Name: auth_group_permissions_permission_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX auth_group_permissions_permission_id ON auth_group_permissions USING btree (permission_id);
+
+
+--
+-- Name: auth_permission_content_type_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX auth_permission_content_type_id ON auth_permission USING btree (content_type_id);
+
+
+--
+-- Name: auth_user_groups_group_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX auth_user_groups_group_id ON auth_user_groups USING btree (group_id);
+
+
+--
+-- Name: auth_user_groups_user_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX auth_user_groups_user_id ON auth_user_groups USING btree (user_id);
+
+
+--
+-- Name: auth_user_user_permissions_permission_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX auth_user_user_permissions_permission_id ON auth_user_user_permissions USING btree (permission_id);
+
+
+--
+-- Name: auth_user_user_permissions_user_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX auth_user_user_permissions_user_id ON auth_user_user_permissions USING btree (user_id);
+
+
+--
+-- Name: celery_taskmeta_hidden; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX celery_taskmeta_hidden ON celery_taskmeta USING btree (hidden);
+
+
+--
+-- Name: celery_tasksetmeta_hidden; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX celery_tasksetmeta_hidden ON celery_tasksetmeta USING btree (hidden);
+
+
+--
+-- Name: changelog_changelog_type; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX changelog_changelog_type ON changelog_changelog USING btree (type);
+
+
+--
+-- Name: changelog_changelog_type_like; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX changelog_changelog_type_like ON changelog_changelog USING btree (type varchar_pattern_ops);
+
+
+--
+-- Name: clip_clip_duration; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX clip_clip_duration ON clip_clip USING btree (duration);
+
+
+--
+-- Name: clip_clip_hue; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX clip_clip_hue ON clip_clip USING btree (hue);
+
+
+--
+-- Name: clip_clip_item_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX clip_clip_item_id ON clip_clip USING btree (item_id);
+
+
+--
+-- Name: clip_clip_keywords_idx; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX clip_clip_keywords_idx ON clip_clip USING btree (keywords);
+
+
+--
+-- Name: clip_clip_lightness; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX clip_clip_lightness ON clip_clip USING btree (lightness);
+
+
+--
+-- Name: clip_clip_publicnotes_idx; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX clip_clip_publicnotes_idx ON clip_clip USING btree (publicnotes);
+
+
+--
+-- Name: clip_clip_saturation; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX clip_clip_saturation ON clip_clip USING btree (saturation);
+
+
+--
+-- Name: clip_clip_sort_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX clip_clip_sort_id ON clip_clip USING btree (sort_id);
+
+
+--
+-- Name: clip_clip_sortvalue; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX clip_clip_sortvalue ON clip_clip USING btree (sortvalue);
+
+
+--
+-- Name: clip_clip_sortvalue_like; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX clip_clip_sortvalue_like ON clip_clip USING btree (sortvalue varchar_pattern_ops);
+
+
+--
+-- Name: clip_clip_start; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX clip_clip_start ON clip_clip USING btree (start);
+
+
+--
+-- Name: clip_clip_subtitles; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX clip_clip_subtitles ON clip_clip USING btree (subtitles);
+
+
+--
+-- Name: clip_clip_user; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX clip_clip_user ON clip_clip USING btree ("user");
+
+
+--
+-- Name: clip_clip_volume; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX clip_clip_volume ON clip_clip USING btree (volume);
+
+
+--
+-- Name: clip_random_random; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX clip_random_random ON clip_random USING btree (random);
+
+
+--
+-- Name: django_admin_log_content_type_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX django_admin_log_content_type_id ON django_admin_log USING btree (content_type_id);
+
+
+--
+-- Name: django_admin_log_user_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX django_admin_log_user_id ON django_admin_log USING btree (user_id);
+
+
+--
+-- Name: django_session_expire_date; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX django_session_expire_date ON django_session USING btree (expire_date);
+
+
+--
+-- Name: djcelery_periodictask_crontab_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX djcelery_periodictask_crontab_id ON djcelery_periodictask USING btree (crontab_id);
+
+
+--
+-- Name: djcelery_periodictask_interval_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX djcelery_periodictask_interval_id ON djcelery_periodictask USING btree (interval_id);
+
+
+--
+-- Name: djcelery_taskstate_hidden; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX djcelery_taskstate_hidden ON djcelery_taskstate USING btree (hidden);
+
+
+--
+-- Name: djcelery_taskstate_name; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX djcelery_taskstate_name ON djcelery_taskstate USING btree (name);
+
+
+--
+-- Name: djcelery_taskstate_name_like; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX djcelery_taskstate_name_like ON djcelery_taskstate USING btree (name varchar_pattern_ops);
+
+
+--
+-- Name: djcelery_taskstate_state; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX djcelery_taskstate_state ON djcelery_taskstate USING btree (state);
+
+
+--
+-- Name: djcelery_taskstate_state_like; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX djcelery_taskstate_state_like ON djcelery_taskstate USING btree (state varchar_pattern_ops);
+
+
+--
+-- Name: djcelery_taskstate_tstamp; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX djcelery_taskstate_tstamp ON djcelery_taskstate USING btree (tstamp);
+
+
+--
+-- Name: djcelery_taskstate_worker_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX djcelery_taskstate_worker_id ON djcelery_taskstate USING btree (worker_id);
+
+
+--
+-- Name: djcelery_workerstate_last_heartbeat; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX djcelery_workerstate_last_heartbeat ON djcelery_workerstate USING btree (last_heartbeat);
+
+
+--
+-- Name: document_itemproperties_document_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX document_itemproperties_document_id ON document_itemproperties USING btree (document_id);
+
+
+--
+-- Name: document_itemproperties_item_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX document_itemproperties_item_id ON document_itemproperties USING btree (item_id);
+
+
+--
+-- Name: edit_clip_annotation_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX edit_clip_annotation_id ON edit_clip USING btree (annotation_id);
+
+
+--
+-- Name: edit_clip_edit_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX edit_clip_edit_id ON edit_clip USING btree (edit_id);
+
+
+--
+-- Name: edit_clip_item_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX edit_clip_item_id ON edit_clip USING btree (item_id);
+
+
+--
+-- Name: edit_edit_rightslevel; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX edit_edit_rightslevel ON edit_edit USING btree (rightslevel);
+
+
+--
+-- Name: edit_edit_subscribed_users_edit_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX edit_edit_subscribed_users_edit_id ON edit_edit_subscribed_users USING btree (edit_id);
+
+
+--
+-- Name: edit_edit_subscribed_users_user_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX edit_edit_subscribed_users_user_id ON edit_edit_subscribed_users USING btree (user_id);
+
+
+--
+-- Name: edit_edit_user_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX edit_edit_user_id ON edit_edit USING btree (user_id);
+
+
+--
+-- Name: edit_position_edit_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX edit_position_edit_id ON edit_position USING btree (edit_id);
+
+
+--
+-- Name: edit_position_user_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX edit_position_user_id ON edit_position USING btree (user_id);
+
+
+--
+-- Name: event_event_annotations_annotation_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX event_event_annotations_annotation_id ON event_event_annotations USING btree (annotation_id);
+
+
+--
+-- Name: event_event_annotations_event_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX event_event_annotations_event_id ON event_event_annotations USING btree (event_id);
+
+
+--
+-- Name: event_event_items_event_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX event_event_items_event_id ON event_event_items USING btree (event_id);
+
+
+--
+-- Name: event_event_items_item_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX event_event_items_item_id ON event_event_items USING btree (item_id);
+
+
+--
+-- Name: event_event_name_sort; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX event_event_name_sort ON event_event USING btree (name_sort);
+
+
+--
+-- Name: event_event_name_sort_like; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX event_event_name_sort_like ON event_event USING btree (name_sort varchar_pattern_ops);
+
+
+--
+-- Name: event_event_user_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX event_event_user_id ON event_event USING btree (user_id);
+
+
+--
+-- Name: file_file_user_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX file_file_user_id ON document_document USING btree (user_id);
+
+
+--
+-- Name: item_access_item_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX item_access_item_id ON item_access USING btree (item_id);
+
+
+--
+-- Name: item_access_user_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX item_access_user_id ON item_access USING btree (user_id);
+
+
+--
+-- Name: item_description_key; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX item_description_key ON item_description USING btree (key);
+
+
+--
+-- Name: item_description_key_like; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX item_description_key_like ON item_description USING btree (key varchar_pattern_ops);
+
+
+--
+-- Name: item_description_value; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX item_description_value ON item_description USING btree (value);
+
+
+--
+-- Name: item_description_value_like; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX item_description_value_like ON item_description USING btree (value varchar_pattern_ops);
+
+
+--
+-- Name: item_facet_item_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX item_facet_item_id ON item_facet USING btree (item_id);
+
+
+--
+-- Name: item_facet_key; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX item_facet_key ON item_facet USING btree (key);
+
+
+--
+-- Name: item_facet_key_like; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX item_facet_key_like ON item_facet USING btree (key varchar_pattern_ops);
+
+
+--
+-- Name: item_facet_sortvalue; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX item_facet_sortvalue ON item_facet USING btree (sortvalue);
+
+
+--
+-- Name: item_facet_sortvalue_like; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX item_facet_sortvalue_like ON item_facet USING btree (sortvalue varchar_pattern_ops);
+
+
+--
+-- Name: item_facet_value; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX item_facet_value ON item_facet USING btree (value);
+
+
+--
+-- Name: item_facet_value_like; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX item_facet_value_like ON item_facet USING btree (value varchar_pattern_ops);
+
+
+--
+-- Name: item_item_groups_group_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX item_item_groups_group_id ON item_item_groups USING btree (group_id);
+
+
+--
+-- Name: item_item_groups_item_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX item_item_groups_item_id ON item_item_groups USING btree (item_id);
+
+
+--
+-- Name: item_item_level; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX item_item_level ON item_item USING btree (level);
+
+
+--
+-- Name: item_item_rendered; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX item_item_rendered ON item_item USING btree (rendered);
+
+
+--
+-- Name: item_item_user_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX item_item_user_id ON item_item USING btree (user_id);
+
+
+--
+-- Name: item_itemfind_item_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX item_itemfind_item_id ON item_itemfind USING btree (item_id);
+
+
+--
+-- Name: item_itemfind_key; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX item_itemfind_key ON item_itemfind USING btree (key);
+
+
+--
+-- Name: item_itemfind_key_like; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX item_itemfind_key_like ON item_itemfind USING btree (key varchar_pattern_ops);
+
+
+--
+-- Name: item_itemsort_accessed_idx; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX item_itemsort_accessed_idx ON item_itemsort USING btree (accessed);
+
+
+--
+-- Name: item_itemsort_aspectratio_idx; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX item_itemsort_aspectratio_idx ON item_itemsort USING btree (aspectratio);
+
+
+--
+-- Name: item_itemsort_bitrate_idx; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX item_itemsort_bitrate_idx ON item_itemsort USING btree (bitrate);
+
+
+--
+-- Name: item_itemsort_country_idx; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX item_itemsort_country_idx ON item_itemsort USING btree (country);
+
+
+--
+-- Name: item_itemsort_created_idx; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX item_itemsort_created_idx ON item_itemsort USING btree (created);
+
+
+--
+-- Name: item_itemsort_cutsperminute_idx; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX item_itemsort_cutsperminute_idx ON item_itemsort USING btree (cutsperminute);
+
+
+--
+-- Name: item_itemsort_director_idx; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX item_itemsort_director_idx ON item_itemsort USING btree (director);
+
+
+--
+-- Name: item_itemsort_duration_idx; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX item_itemsort_duration_idx ON item_itemsort USING btree (duration);
+
+
+--
+-- Name: item_itemsort_featuring_idx; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX item_itemsort_featuring_idx ON item_itemsort USING btree (featuring);
+
+
+--
+-- Name: item_itemsort_height_idx; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX item_itemsort_height_idx ON item_itemsort USING btree (height);
+
+
+--
+-- Name: item_itemsort_hue_idx; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX item_itemsort_hue_idx ON item_itemsort USING btree (hue);
+
+
+--
+-- Name: item_itemsort_itemId_idx; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX "item_itemsort_itemId_idx" ON item_itemsort USING btree ("itemId");
+
+
+--
+-- Name: item_itemsort_language_idx; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX item_itemsort_language_idx ON item_itemsort USING btree (language);
+
+
+--
+-- Name: item_itemsort_lightness_idx; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX item_itemsort_lightness_idx ON item_itemsort USING btree (lightness);
+
+
+--
+-- Name: item_itemsort_modified_idx; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX item_itemsort_modified_idx ON item_itemsort USING btree (modified);
+
+
+--
+-- Name: item_itemsort_numberofannotations_idx; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX item_itemsort_numberofannotations_idx ON item_itemsort USING btree (numberofannotations);
+
+
+--
+-- Name: item_itemsort_numberofcuts_idx; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX item_itemsort_numberofcuts_idx ON item_itemsort USING btree (numberofcuts);
+
+
+--
+-- Name: item_itemsort_numberoffiles_idx; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX item_itemsort_numberoffiles_idx ON item_itemsort USING btree (numberoffiles);
+
+
+--
+-- Name: item_itemsort_pixels_idx; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX item_itemsort_pixels_idx ON item_itemsort USING btree (pixels);
+
+
+--
+-- Name: item_itemsort_random_idx; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX item_itemsort_random_idx ON item_itemsort USING btree (random);
+
+
+--
+-- Name: item_itemsort_resolution_idx; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX item_itemsort_resolution_idx ON item_itemsort USING btree (resolution);
+
+
+--
+-- Name: item_itemsort_rightslevel_idx; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX item_itemsort_rightslevel_idx ON item_itemsort USING btree (rightslevel);
+
+
+--
+-- Name: item_itemsort_saturation_idx; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX item_itemsort_saturation_idx ON item_itemsort USING btree (saturation);
+
+
+--
+-- Name: item_itemsort_size_idx; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX item_itemsort_size_idx ON item_itemsort USING btree (size);
+
+
+--
+-- Name: item_itemsort_timesaccessed_idx; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX item_itemsort_timesaccessed_idx ON item_itemsort USING btree (timesaccessed);
+
+
+--
+-- Name: item_itemsort_title_idx; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX item_itemsort_title_idx ON item_itemsort USING btree (title);
+
+
+--
+-- Name: item_itemsort_volume_idx; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX item_itemsort_volume_idx ON item_itemsort USING btree (volume);
+
+
+--
+-- Name: item_itemsort_width_idx; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX item_itemsort_width_idx ON item_itemsort USING btree (width);
+
+
+--
+-- Name: item_itemsort_words_idx; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX item_itemsort_words_idx ON item_itemsort USING btree (words);
+
+
+--
+-- Name: item_itemsort_wordsperminute_idx; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX item_itemsort_wordsperminute_idx ON item_itemsort USING btree (wordsperminute);
+
+
+--
+-- Name: item_itemsort_year_idx; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX item_itemsort_year_idx ON item_itemsort USING btree (year);
+
+
+--
+-- Name: itemlist_list_subscribed_users_list_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX itemlist_list_subscribed_users_list_id ON itemlist_list_subscribed_users USING btree (list_id);
+
+
+--
+-- Name: itemlist_list_subscribed_users_user_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX itemlist_list_subscribed_users_user_id ON itemlist_list_subscribed_users USING btree (user_id);
+
+
+--
+-- Name: itemlist_list_user_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX itemlist_list_user_id ON itemlist_list USING btree (user_id);
+
+
+--
+-- Name: itemlist_listitem_item_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX itemlist_listitem_item_id ON itemlist_listitem USING btree (item_id);
+
+
+--
+-- Name: itemlist_listitem_list_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX itemlist_listitem_list_id ON itemlist_listitem USING btree (list_id);
+
+
+--
+-- Name: itemlist_position_list_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX itemlist_position_list_id ON itemlist_position USING btree (list_id);
+
+
+--
+-- Name: itemlist_position_user_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX itemlist_position_user_id ON itemlist_position USING btree (user_id);
+
+
+--
+-- Name: log_log_created; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX log_log_created ON log_log USING btree (created);
+
+
+--
+-- Name: log_log_user_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX log_log_user_id ON log_log USING btree (user_id);
+
+
+--
+-- Name: place_place_annotations_annotation_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX place_place_annotations_annotation_id ON place_place_annotations USING btree (annotation_id);
+
+
+--
+-- Name: place_place_annotations_place_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX place_place_annotations_place_id ON place_place_annotations USING btree (place_id);
+
+
+--
+-- Name: place_place_area; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX place_place_area ON place_place USING btree (area);
+
+
+--
+-- Name: place_place_countryCode; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX "place_place_countryCode" ON place_place USING btree ("countryCode");
+
+
+--
+-- Name: place_place_countryCode_like; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX "place_place_countryCode_like" ON place_place USING btree ("countryCode" varchar_pattern_ops);
+
+
+--
+-- Name: place_place_east; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX place_place_east ON place_place USING btree (east);
+
+
+--
+-- Name: place_place_geoname_sort; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX place_place_geoname_sort ON place_place USING btree (geoname_sort);
+
+
+--
+-- Name: place_place_geoname_sort_like; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX place_place_geoname_sort_like ON place_place USING btree (geoname_sort varchar_pattern_ops);
+
+
+--
+-- Name: place_place_items_item_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX place_place_items_item_id ON place_place_items USING btree (item_id);
+
+
+--
+-- Name: place_place_items_place_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX place_place_items_place_id ON place_place_items USING btree (place_id);
+
+
+--
+-- Name: place_place_lat; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX place_place_lat ON place_place USING btree (lat);
+
+
+--
+-- Name: place_place_lng; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX place_place_lng ON place_place USING btree (lng);
+
+
+--
+-- Name: place_place_matches; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX place_place_matches ON place_place USING btree (matches);
+
+
+--
+-- Name: place_place_name_sort; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX place_place_name_sort ON place_place USING btree (name_sort);
+
+
+--
+-- Name: place_place_name_sort_like; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX place_place_name_sort_like ON place_place USING btree (name_sort varchar_pattern_ops);
+
+
+--
+-- Name: place_place_north; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX place_place_north ON place_place USING btree (north);
+
+
+--
+-- Name: place_place_south; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX place_place_south ON place_place USING btree (south);
+
+
+--
+-- Name: place_place_type; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX place_place_type ON place_place USING btree (type);
+
+
+--
+-- Name: place_place_type_like; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX place_place_type_like ON place_place USING btree (type varchar_pattern_ops);
+
+
+--
+-- Name: place_place_user_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX place_place_user_id ON place_place USING btree (user_id);
+
+
+--
+-- Name: place_place_west; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX place_place_west ON place_place USING btree (west);
+
+
+--
+-- Name: sequence_sequence_hash2; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX sequence_sequence_hash2 ON sequence_sequence USING btree (hash);
+
+
+--
+-- Name: sequence_sequence_sort_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX sequence_sequence_sort_id ON sequence_sequence USING btree (sort_id);
+
+
+--
+-- Name: text_position_text_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX text_position_text_id ON text_position USING btree (text_id);
+
+
+--
+-- Name: text_position_user_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX text_position_user_id ON text_position USING btree (user_id);
+
+
+--
+-- Name: text_text_rightslevel; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX text_text_rightslevel ON text_text USING btree (rightslevel);
+
+
+--
+-- Name: text_text_subscribed_users_text_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX text_text_subscribed_users_text_id ON text_text_subscribed_users USING btree (text_id);
+
+
+--
+-- Name: text_text_subscribed_users_user_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX text_text_subscribed_users_user_id ON text_text_subscribed_users USING btree (user_id);
+
+
+--
+-- Name: text_text_user_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX text_text_user_id ON text_text USING btree (user_id);
+
+
+--
+-- Name: tv_program_channel_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX tv_program_channel_id ON tv_program USING btree (channel_id);
+
+
+--
+-- Name: tv_program_item_id; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX tv_program_item_id ON tv_program USING btree (item_id);
+
+
+--
+-- Name: user_sessiondata_firstseen; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX user_sessiondata_firstseen ON user_sessiondata USING btree (firstseen);
+
+
+--
+-- Name: user_sessiondata_lastseen; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX user_sessiondata_lastseen ON user_sessiondata USING btree (lastseen);
+
+
+--
+-- Name: user_sessiondata_level; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX user_sessiondata_level ON user_sessiondata USING btree (level);
+
+
+--
+-- Name: user_sessiondata_username; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX user_sessiondata_username ON user_sessiondata USING btree (username);
+
+
+--
+-- Name: user_sessiondata_username_like; Type: INDEX; Schema: public; Owner: pandora; Tablespace: 
+--
+
+CREATE INDEX user_sessiondata_username_like ON user_sessiondata USING btree (username varchar_pattern_ops);
+
+
+--
+-- Name: annotation_id_refs_id_7b175ec7; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY edit_clip
+    ADD CONSTRAINT annotation_id_refs_id_7b175ec7 FOREIGN KEY (annotation_id) REFERENCES annotation_annotation(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: annotation_id_refs_id_b1a02ca6; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY place_place_annotations
+    ADD CONSTRAINT annotation_id_refs_id_b1a02ca6 FOREIGN KEY (annotation_id) REFERENCES annotation_annotation(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: annotation_id_refs_id_b943c9ca; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY event_event_annotations
+    ADD CONSTRAINT annotation_id_refs_id_b943c9ca FOREIGN KEY (annotation_id) REFERENCES annotation_annotation(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_group_permissions_permission_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY auth_group_permissions
+    ADD CONSTRAINT auth_group_permissions_permission_id_fkey FOREIGN KEY (permission_id) REFERENCES auth_permission(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_user_groups_group_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY auth_user_groups
+    ADD CONSTRAINT auth_user_groups_group_id_fkey FOREIGN KEY (group_id) REFERENCES auth_group(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_user_user_permissions_permission_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permissions_permission_id_fkey FOREIGN KEY (permission_id) REFERENCES auth_permission(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: channel_id_refs_id_8c82d076; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY tv_program
+    ADD CONSTRAINT channel_id_refs_id_8c82d076 FOREIGN KEY (channel_id) REFERENCES tv_channel(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: clip_id_refs_id_29829ba2; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY clip_random
+    ADD CONSTRAINT clip_id_refs_id_29829ba2 FOREIGN KEY (clip_id) REFERENCES clip_clip(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: clip_id_refs_id_4bd9a531; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY annotation_annotation
+    ADD CONSTRAINT clip_id_refs_id_4bd9a531 FOREIGN KEY (clip_id) REFERENCES clip_clip(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: content_type_id_refs_id_728de91f; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY auth_permission
+    ADD CONSTRAINT content_type_id_refs_id_728de91f FOREIGN KEY (content_type_id) REFERENCES django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: crontab_id_refs_id_ebff5e74; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY djcelery_periodictask
+    ADD CONSTRAINT crontab_id_refs_id_ebff5e74 FOREIGN KEY (crontab_id) REFERENCES djcelery_crontabschedule(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: django_admin_log_content_type_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY django_admin_log
+    ADD CONSTRAINT django_admin_log_content_type_id_fkey FOREIGN KEY (content_type_id) REFERENCES django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: django_admin_log_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY django_admin_log
+    ADD CONSTRAINT django_admin_log_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: document_id_refs_id_87297820; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY document_itemproperties
+    ADD CONSTRAINT document_id_refs_id_87297820 FOREIGN KEY (document_id) REFERENCES document_document(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: edit_id_refs_id_4d789a0b; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY edit_clip
+    ADD CONSTRAINT edit_id_refs_id_4d789a0b FOREIGN KEY (edit_id) REFERENCES edit_edit(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: edit_id_refs_id_60c7fb58; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY edit_edit_subscribed_users
+    ADD CONSTRAINT edit_id_refs_id_60c7fb58 FOREIGN KEY (edit_id) REFERENCES edit_edit(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: edit_id_refs_id_f4f0da96; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY edit_position
+    ADD CONSTRAINT edit_id_refs_id_f4f0da96 FOREIGN KEY (edit_id) REFERENCES edit_edit(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: event_id_refs_id_af6762fc; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY event_event_annotations
+    ADD CONSTRAINT event_id_refs_id_af6762fc FOREIGN KEY (event_id) REFERENCES event_event(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: event_id_refs_id_bd5cfd98; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY event_event_items
+    ADD CONSTRAINT event_id_refs_id_bd5cfd98 FOREIGN KEY (event_id) REFERENCES event_event(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: file_id_refs_id_619a68ff; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY archive_stream
+    ADD CONSTRAINT file_id_refs_id_619a68ff FOREIGN KEY (file_id) REFERENCES archive_file(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: file_id_refs_id_e10e836a; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY archive_instance
+    ADD CONSTRAINT file_id_refs_id_e10e836a FOREIGN KEY (file_id) REFERENCES archive_file(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: file_id_refs_id_ef49e571; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY archive_frame
+    ADD CONSTRAINT file_id_refs_id_ef49e571 FOREIGN KEY (file_id) REFERENCES archive_file(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: group_id_refs_id_3cea63fe; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY auth_group_permissions
+    ADD CONSTRAINT group_id_refs_id_3cea63fe FOREIGN KEY (group_id) REFERENCES auth_group(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: group_id_refs_id_58bee9f7; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY item_item_groups
+    ADD CONSTRAINT group_id_refs_id_58bee9f7 FOREIGN KEY (group_id) REFERENCES auth_group(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: interval_id_refs_id_f2054349; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY djcelery_periodictask
+    ADD CONSTRAINT interval_id_refs_id_f2054349 FOREIGN KEY (interval_id) REFERENCES djcelery_intervalschedule(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: item_id_refs_id_398d2d12; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY event_event_items
+    ADD CONSTRAINT item_id_refs_id_398d2d12 FOREIGN KEY (item_id) REFERENCES item_item(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: item_id_refs_id_4c2337a0; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY item_facet
+    ADD CONSTRAINT item_id_refs_id_4c2337a0 FOREIGN KEY (item_id) REFERENCES item_item(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: item_id_refs_id_6a01685e; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY place_place_items
+    ADD CONSTRAINT item_id_refs_id_6a01685e FOREIGN KEY (item_id) REFERENCES item_item(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: item_id_refs_id_6cba4294; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY archive_file
+    ADD CONSTRAINT item_id_refs_id_6cba4294 FOREIGN KEY (item_id) REFERENCES item_item(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: item_id_refs_id_77bb24c1; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY item_item_groups
+    ADD CONSTRAINT item_id_refs_id_77bb24c1 FOREIGN KEY (item_id) REFERENCES item_item(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: item_id_refs_id_832b5c13; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY itemlist_listitem
+    ADD CONSTRAINT item_id_refs_id_832b5c13 FOREIGN KEY (item_id) REFERENCES item_item(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: item_id_refs_id_92c13cba; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY item_itemfind
+    ADD CONSTRAINT item_id_refs_id_92c13cba FOREIGN KEY (item_id) REFERENCES item_item(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: item_id_refs_id_97a3be29; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY clip_clip
+    ADD CONSTRAINT item_id_refs_id_97a3be29 FOREIGN KEY (item_id) REFERENCES item_item(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: item_id_refs_id_97d67be; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY tv_program
+    ADD CONSTRAINT item_id_refs_id_97d67be FOREIGN KEY (item_id) REFERENCES item_item(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: item_id_refs_id_a2d9c1d8; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY document_itemproperties
+    ADD CONSTRAINT item_id_refs_id_a2d9c1d8 FOREIGN KEY (item_id) REFERENCES item_item(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: item_id_refs_id_af4f0ae1; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY item_itemsort
+    ADD CONSTRAINT item_id_refs_id_af4f0ae1 FOREIGN KEY (item_id) REFERENCES item_item(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: item_id_refs_id_c17e367b; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY edit_clip
+    ADD CONSTRAINT item_id_refs_id_c17e367b FOREIGN KEY (item_id) REFERENCES item_item(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: item_id_refs_id_c90701ff; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY annotation_annotation
+    ADD CONSTRAINT item_id_refs_id_c90701ff FOREIGN KEY (item_id) REFERENCES item_item(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: item_id_refs_id_ea07ce82; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY item_access
+    ADD CONSTRAINT item_id_refs_id_ea07ce82 FOREIGN KEY (item_id) REFERENCES item_item(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: list_id_refs_id_bbb4d820; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY itemlist_list_subscribed_users
+    ADD CONSTRAINT list_id_refs_id_bbb4d820 FOREIGN KEY (list_id) REFERENCES itemlist_list(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: list_id_refs_id_c0ec6fa4; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY itemlist_position
+    ADD CONSTRAINT list_id_refs_id_c0ec6fa4 FOREIGN KEY (list_id) REFERENCES itemlist_list(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: list_id_refs_id_cc24b370; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY itemlist_listitem
+    ADD CONSTRAINT list_id_refs_id_cc24b370 FOREIGN KEY (list_id) REFERENCES itemlist_list(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: list_id_refs_id_da1ca2f0; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY tv_channel
+    ADD CONSTRAINT list_id_refs_id_da1ca2f0 FOREIGN KEY (list_id) REFERENCES itemlist_list(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: place_id_refs_id_2abf31c8; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY place_place_items
+    ADD CONSTRAINT place_id_refs_id_2abf31c8 FOREIGN KEY (place_id) REFERENCES place_place(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: place_id_refs_id_564b2f44; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY place_place_annotations
+    ADD CONSTRAINT place_id_refs_id_564b2f44 FOREIGN KEY (place_id) REFERENCES place_place(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: sort_id_refs_item_id_4ff19529; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY sequence_sequence
+    ADD CONSTRAINT sort_id_refs_item_id_4ff19529 FOREIGN KEY (sort_id) REFERENCES item_itemsort(item_id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: sort_id_refs_item_id_edc38dad; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY clip_clip
+    ADD CONSTRAINT sort_id_refs_item_id_edc38dad FOREIGN KEY (sort_id) REFERENCES item_itemsort(item_id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: source_id_refs_id_87ab61b3; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY archive_stream
+    ADD CONSTRAINT source_id_refs_id_87ab61b3 FOREIGN KEY (source_id) REFERENCES archive_stream(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: text_id_refs_id_2e5987cd; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY text_position
+    ADD CONSTRAINT text_id_refs_id_2e5987cd FOREIGN KEY (text_id) REFERENCES text_text(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: text_id_refs_id_7b5d76f8; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY text_text_subscribed_users
+    ADD CONSTRAINT text_id_refs_id_7b5d76f8 FOREIGN KEY (text_id) REFERENCES text_text(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: user_id_refs_id_12dd7ee7; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY item_access
+    ADD CONSTRAINT user_id_refs_id_12dd7ee7 FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: user_id_refs_id_2f5cb0e8; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY annotation_annotation
+    ADD CONSTRAINT user_id_refs_id_2f5cb0e8 FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: user_id_refs_id_30e444d0; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY itemlist_position
+    ADD CONSTRAINT user_id_refs_id_30e444d0 FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: user_id_refs_id_31190356; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY event_event
+    ADD CONSTRAINT user_id_refs_id_31190356 FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: user_id_refs_id_34cdf93c; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY text_text
+    ADD CONSTRAINT user_id_refs_id_34cdf93c FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: user_id_refs_id_36e8f4f; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY text_text_subscribed_users
+    ADD CONSTRAINT user_id_refs_id_36e8f4f FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: user_id_refs_id_4ce20cfc; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY item_item
+    ADD CONSTRAINT user_id_refs_id_4ce20cfc FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: user_id_refs_id_5b0e36ea; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY document_document
+    ADD CONSTRAINT user_id_refs_id_5b0e36ea FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: user_id_refs_id_62feeb70; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY user_sessiondata
+    ADD CONSTRAINT user_id_refs_id_62feeb70 FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: user_id_refs_id_6f4663c; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY text_position
+    ADD CONSTRAINT user_id_refs_id_6f4663c FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: user_id_refs_id_71260619; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY itemlist_list
+    ADD CONSTRAINT user_id_refs_id_71260619 FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: user_id_refs_id_831107f1; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY auth_user_groups
+    ADD CONSTRAINT user_id_refs_id_831107f1 FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: user_id_refs_id_88a75346; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY place_place
+    ADD CONSTRAINT user_id_refs_id_88a75346 FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: user_id_refs_id_8a513897; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY edit_edit_subscribed_users
+    ADD CONSTRAINT user_id_refs_id_8a513897 FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: user_id_refs_id_8c4662e6; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY edit_edit
+    ADD CONSTRAINT user_id_refs_id_8c4662e6 FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: user_id_refs_id_9ccddad5; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY archive_volume
+    ADD CONSTRAINT user_id_refs_id_9ccddad5 FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: user_id_refs_id_a513176e; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY log_log
+    ADD CONSTRAINT user_id_refs_id_a513176e FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: user_id_refs_id_c6910c54; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY itemlist_list_subscribed_users
+    ADD CONSTRAINT user_id_refs_id_c6910c54 FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: user_id_refs_id_db3a7c80; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY user_userprofile
+    ADD CONSTRAINT user_id_refs_id_db3a7c80 FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: user_id_refs_id_df8dbaf9; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY edit_position
+    ADD CONSTRAINT user_id_refs_id_df8dbaf9 FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: user_id_refs_id_f2045483; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY auth_user_user_permissions
+    ADD CONSTRAINT user_id_refs_id_f2045483 FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: volume_id_refs_id_e30a6c60; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY archive_instance
+    ADD CONSTRAINT volume_id_refs_id_e30a6c60 FOREIGN KEY (volume_id) REFERENCES archive_volume(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: worker_id_refs_id_4e3453a; Type: FK CONSTRAINT; Schema: public; Owner: pandora
+--
+
+ALTER TABLE ONLY djcelery_taskstate
+    ADD CONSTRAINT worker_id_refs_id_4e3453a FOREIGN KEY (worker_id) REFERENCES djcelery_workerstate(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: public; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+REVOKE ALL ON SCHEMA public FROM postgres;
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+--
+-- PostgreSQL database dump complete
+--
+
